@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+
+  --font-poppins: 'Poppins', sans-serif;
+  --font-mont: 'Montserrat', sans-serif;
+  
+  --color-putih: #ffffff;
+  --color-pinus: #14AE5C;
+  --color-hitam: #000000;
+  --color-rosegold: #C8A86B;
+  --color-kertas: #e3e3e3;
+  --color-onyx: #12120e;
+  --color-navy: #3f2e92;
+  --color-obsidian: #171717;
+  --color-rumput: #26c631;
+  --color-dark: #131313;
+  
+}
