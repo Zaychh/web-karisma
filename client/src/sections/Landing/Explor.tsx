@@ -71,7 +71,7 @@ const courses: Course[] = [
   },
   {
     id: 5,
-    title: "Bootcamp Data Science & ML",
+    title: "Bootcamp Data Science & Machine Learning",
     duration: "3 atau 6 bulan",
     image: ml,
     skills: [
