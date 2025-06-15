@@ -6,6 +6,8 @@
   --font-mont: 'Montserrat', sans-serif;
   
   --color-putih: #ffffff;
+  --color-bluberi: #3F2E92;
+  --color-ashh: #1D1D1D;
   --color-pinus: #14AE5C;
   --color-hitam: #000000;
   --color-rosegold: #C8A86B;
@@ -17,3 +19,18 @@
   --color-dark: #131313;
   
 }
+
+@keyframes shiny {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.animate-shiny {
+  animation: shiny 2s linear infinite;
+}
+
+

@@ -73,7 +73,7 @@ const Information: React.FC = () => {
   };
 
   return (
-    <section className="bg-onyx text-kertas py-16 px-4 md:px-8">
+    <section className="bg-ashh text-kertas py-16 px-4 md:px-8">
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-8 items-start">
 
         <div>
