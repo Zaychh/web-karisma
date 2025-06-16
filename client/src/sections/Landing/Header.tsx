@@ -160,7 +160,7 @@ const Header: React.FC = () => {
               className="block text-putih hover:text-rosegold"
             >
               Blog
-            </Link>
+            </Link> 
             <Link
               to="/tentang-kami"
               onClick={() => setMobileMenuOpen(false)}

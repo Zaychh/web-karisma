@@ -40,3 +40,11 @@
 .read-the-docs {
   color: #888;
 }
+
+.bg-hitampekat {
+  @apply h-screen bg-[#1D1D1D] flex items-center justify-center text-white text-2xl;
+}
+
+.bg-abupekat {
+  @apply h-screen bg-[#262626] flex items-center justify-center text-white text-2xl;
+}
