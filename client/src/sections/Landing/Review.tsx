@@ -3,6 +3,8 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaStar } from "react-icons/fa";
 
+import Google from "../../assets/gugel.png";
+
 import Gambar1 from "../../assets/Corey.jpeg";
 import Gambar2 from "../../assets/Maya.jpeg";
 import Gambar3 from "../../assets/Koigner.jpeg";
@@ -135,25 +137,25 @@ const SectionReview = () => {
           </AnimatePresence>
         </div>
 
-        {/* REVIEW */}
+        
         <div className="flex flex-col md:flex-row items-start md:items-stretch justify-between gap-10 max-w-6xl mx-auto">
-          {/* Google Rating */}
-          <div className="bg-white text-black p-6 rounded-xl w-full md:max-w-sm text-left">
+          <div className="border-2 border-white bg-onyx text-putih p-6 rounded-xl w-full md:max-w-sm text-left">
+            <p className="text-lg font-bold font-mont text-white mb-3">Cerita Mereka Bersama Karisma Academy</p>
             <div className="flex items-center gap-2 mb-2">
               <img
-                src="/assets/google-icon.png"
+                src={Google}
                 alt="Google"
                 className="w-8 h-8"
               />
               <h3 className="text-xl font-bold">Google</h3>
             </div>
-            <div className="flex gap-1 text-yellow-400 mb-1">
+            <div className="flex gap-1 text-rosegold mb-1">
               {[...Array(5)].map((_, i) => (
                 <FaStar key={i} />
               ))}
             </div>
-            <p className="font-semibold mb-2 text-black">4.7/5 Rating</p>
-            <p className="text-sm text-gray-700 leading-relaxed">
+            <p className="font-semibold mb-2 text-putih">4.7/5 Rating</p>
+            <p className="text-sm text-kertas leading-relaxed">
               Rate Program Course Karisma Academy yang sudah berlangsung. Ribuan
               peserta merasa terbantu dalam karir dan usaha setelah lulus.
             </p>
