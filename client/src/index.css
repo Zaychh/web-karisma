@@ -3,6 +3,7 @@
 @theme {
 
   --font-poppins: 'Poppins', sans-serif;
+  --font-helve: 'Helvetica', sans-serif;
   --font-mont: 'Montserrat', sans-serif;
   
   --color-putih: #ffffff;
@@ -17,6 +18,9 @@
   --color-obsidian: #171717;
   --color-rumput: #26c631;
   --color-dark: #131313;
+  --color-biru1: #5d69c0;
+  --color-biru2: #2b3990;
+  --color-biru3: #112151;
   
 }
 

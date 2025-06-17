@@ -169,7 +169,7 @@ const Header: React.FC = () => {
               Tentang Kami
             </Link>
             <Link
-              to="/login"
+              to="/Login"
               onClick={() => setMobileMenuOpen(false)}
               className="block mt-2 px-5 py-2 bg-rosegold text-onyx font-semibold rounded-full text-center hover:bg-amber-400 transition-all"
             >
