@@ -4,6 +4,7 @@ import Info from "./Information";
 import Eksplor from "./Explor";
 import HeroSecond from "./Herosec";
 import Testi from "./Testimoni";
+import Review from "./Review";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <Eksplor />
       <HeroSecond />
       <Testi />
+      <Review />
     </>
   );
 }
