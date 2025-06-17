@@ -32,7 +32,7 @@ const Login: React.FC = () => {
           </div>
           <div className="mb-[20px] text-sm">
             Belum punya akun?{' '}
-            <a href="/Sign Up" className="text-blue-700 underline">
+            <a href="/Register" className="text-blue-700 underline">
               Buat Akun
             </a>
           </div>

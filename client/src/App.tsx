@@ -12,7 +12,7 @@ function App() {
         <Route path="/Home" element={<Landing />} />
         <Route path="/tentang-kami" element={<About />} />
         <Route path="/Login" element={<Login />} />
-        <Route path="/Sign Up" element={<Register />} />
+        <Route path="/Register" element={<Register />} />
       </Routes>
     </>
   );
