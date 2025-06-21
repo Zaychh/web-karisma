@@ -5,6 +5,9 @@ import Eksplor from "./Explor";
 import HeroSecond from "./Herosec";
 import Testi from "./Testimoni";
 import Review from "./Review";
+import Partner from "./Partner";
+import Penghargaan from "./Award";
+import FAQ from "./Faq";
 
 function App() {
   return (
@@ -16,6 +19,9 @@ function App() {
       <HeroSecond />
       <Testi />
       <Review />
+      <Partner />
+      <Penghargaan />
+      <FAQ />
     </>
   );
 }
