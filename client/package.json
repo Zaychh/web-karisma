@@ -11,6 +11,11 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "@react-three/drei": "^10.3.0",
+    "@react-three/fiber": "^9.1.2",
+    "@splinetool/r3f-spline": "^1.0.2",
+    "@splinetool/react-spline": "^4.0.0",
+    "@splinetool/runtime": "^1.10.13",
     "@tailwindcss/vite": "^4.1.10",
     "lucide-react": "^0.515.0",
     "motion": "^12.17.3",
