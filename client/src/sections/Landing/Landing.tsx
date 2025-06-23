@@ -9,6 +9,7 @@ import Partner from "./Partner";
 import Penghargaan from "./Award";
 import FAQ from "./Faq";
 import Contact from "./Contact";
+import Footer from "./Footer";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
       <Penghargaan />
       <FAQ />
       <Contact />
+      <Footer />
     </>
   );
 }
