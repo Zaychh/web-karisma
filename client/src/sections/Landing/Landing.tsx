@@ -8,6 +8,7 @@ import Review from "./Review";
 import Partner from "./Partner";
 import Penghargaan from "./Award";
 import FAQ from "./Faq";
+import Contact from "./Contact";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
       <Partner />
       <Penghargaan />
       <FAQ />
+      <Contact />
     </>
   );
 }
