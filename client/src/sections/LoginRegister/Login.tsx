@@ -1,20 +1,59 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FaUser, FaLock } from 'react-icons/fa';
 import mascot from '../../assets/mascot.png';
+import { login } from '../../services/auth';
 
 const Login: React.FC = () => {
+  const [identifier, setIdentifier] = useState('');
+  const [password, setPassword] = useState('');
+
+  
+const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('State before login:', identifier, password);
+    console.log('Identifier length:', identifier.length);
+    console.log('Password length:', password.length);
+
+    if (!identifier.trim()) {
+      alert('Username atau Email tidak boleh kosong!');
+      return;
+    }
+
+    if (!password.trim()) {
+      alert('Password tidak boleh kosong!');
+      return;
+    }
+
+    try {
+      console.log('Mencoba login dengan:', identifier, password);
+      const res = await login(identifier, password);
+      localStorage.setItem('token', res.data.token);
+      alert('Login berhasil!');
+    } catch (err: any) {
+      console.log('Login gagal! mencoba login dengan:', identifier, password);
+      console.error('Full Error:', err);
+      alert(err.response?.data?.error || 'Login gagal!');
+    }
+  };
+
   return (
     <div className="flex w-[900px] h-[500px] bg-white rounded-[10px] overflow-hidden shadow-[0_5px_15px_rgba(0,0,0,0.1)] mx-auto mt-[50px] font-sans">
       <div className="flex-1 p-[50px]">
         <h1 className="text-[2.5em] font-bold mb-[40px]">Sign In</h1>
-        <form>
+        <form onSubmit={handleLogin}>
           <div className="mb-[20px]">
             <label className="flex items-center border-[1.5px] border-black rounded-full px-[15px] py-[10px] gap-[10px]">
               <FaUser />
               <input
                 type="text"
-                placeholder="Username"
+                name='identifier'
+                placeholder="Username atau Email"
                 required
+                value={identifier}
+                onChange={(e) => {
+                  console.log('Identifier changed:', e.target.value);
+                  setIdentifier(e.target.value);
+                }}
                 className="flex-1 outline-none bg-transparent text-base"
               />
             </label>
@@ -25,6 +64,11 @@ const Login: React.FC = () => {
               <input
                 type="password"
                 placeholder="Password"
+                value={password}
+                 onChange={(e) => {
+                        console.log('Password changed:', e.target.value); // DEBUG
+                        setPassword(e.target.value);
+                 }}
                 required
                 className="flex-1 outline-none bg-transparent text-base"
               />
@@ -39,6 +83,7 @@ const Login: React.FC = () => {
           <button
             type="submit"
             className="bg-[#16238D] text-white py-[12px] px-[30px] rounded-full text-base hover:bg-[#0f1b6b] transition-all"
+            onClick={() => console.log('Button clicked, current state:', { identifier, password })}
           >
             Sign In
           </button>
