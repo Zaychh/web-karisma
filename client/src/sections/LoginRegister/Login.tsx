@@ -2,17 +2,22 @@ import React, { useState } from 'react';
 import { FaUser, FaLock } from 'react-icons/fa';
 import mascot from '../../assets/mascot.png';
 import { login } from '../../services/auth';
+import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode'; // install ini
+
+interface DecodedToken {
+  username: string;
+  role: 'admin' | 'user';
+  exp: number;
+}
 
 const Login: React.FC = () => {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
-  
-const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('State before login:', identifier, password);
-    console.log('Identifier length:', identifier.length);
-    console.log('Password length:', password.length);
 
     if (!identifier.trim()) {
       alert('Username atau Email tidak boleh kosong!');
@@ -25,14 +30,22 @@ const handleLogin = async (e: React.FormEvent) => {
     }
 
     try {
-      console.log('Mencoba login dengan:', identifier, password);
       const res = await login(identifier, password);
-      localStorage.setItem('token', res.data.token);
-      alert('Login berhasil!');
+      const token = res.data.token;
+
+      localStorage.setItem('token', token);
+
+      // Decode token untuk ambil role
+      const decoded = jwtDecode<DecodedToken>(token);
+
+      if (decoded.role === 'admin') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (err: any) {
-      console.log('Login gagal! mencoba login dengan:', identifier, password);
-      console.error('Full Error:', err);
-      alert(err.response?.data?.error || 'Login gagal!');
+      console.error('Login gagal:', err);
+      alert(err.response?.data?.message || 'Login gagal! Periksa kembali data Anda.');
     }
   };
 
@@ -46,14 +59,11 @@ const handleLogin = async (e: React.FormEvent) => {
               <FaUser />
               <input
                 type="text"
-                name='identifier'
+                name="identifier"
                 placeholder="Username atau Email"
                 required
                 value={identifier}
-                onChange={(e) => {
-                  console.log('Identifier changed:', e.target.value);
-                  setIdentifier(e.target.value);
-                }}
+                onChange={(e) => setIdentifier(e.target.value)}
                 className="flex-1 outline-none bg-transparent text-base"
               />
             </label>
@@ -64,12 +74,9 @@ const handleLogin = async (e: React.FormEvent) => {
               <input
                 type="password"
                 placeholder="Password"
-                value={password}
-                 onChange={(e) => {
-                        console.log('Password changed:', e.target.value); // DEBUG
-                        setPassword(e.target.value);
-                 }}
                 required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="flex-1 outline-none bg-transparent text-base"
               />
             </label>
@@ -83,7 +90,6 @@ const handleLogin = async (e: React.FormEvent) => {
           <button
             type="submit"
             className="bg-[#16238D] text-white py-[12px] px-[30px] rounded-full text-base hover:bg-[#0f1b6b] transition-all"
-            onClick={() => console.log('Button clicked, current state:', { identifier, password })}
           >
             Sign In
           </button>
