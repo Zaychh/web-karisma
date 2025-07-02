@@ -1,0 +1,39 @@
+.glitch-text {
+  position: relative;
+  color: white;
+  text-shadow:
+    1px 0 red,
+    -1px 0 cyan;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  color: white;
+  background: transparent;
+}
+
+.glitch-subtext {
+  position: relative;
+  color: #fff;
+  animation: glitchColor 2s infinite;
+}
+
+@keyframes glitchColor {
+  0% {
+    color: #8b5cf6; /* ungu */
+  }
+  33% {
+    color: #22d3ee; /* biru muda */
+  }
+  66% {
+    color: #4ade80; /* hijau muda */
+  }
+  100% {
+    color: #8b5cf6;
+  }
+}
