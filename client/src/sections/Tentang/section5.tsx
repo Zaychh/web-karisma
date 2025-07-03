@@ -43,7 +43,7 @@ const testimonials = [
   },
   {
     img: t4,
-    name: "Siegfried koigner",
+    name: "Siegfried Koigner",
     role: "UI/UX Designer",
     company: "Tokopedia",
     text: `Saya belajar langsung dari praktisi industri dan diberi kebebasan eksplorasi desain produk nyata. Saya makin pede buat terjun ke dunia kerja!`,
