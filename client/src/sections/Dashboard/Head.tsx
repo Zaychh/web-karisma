@@ -61,8 +61,7 @@ const Header: React.FC = () => {
                     <div>
                       <p className="font-semibold">Bootcamp</p>
                       <p className="text-sm">
-                        Hadir untuk level up skill digital kamu dengan real-life
-                        project.
+                        Hadir untuk level up skill digital kamu dengan real-life project.
                       </p>
                     </div>
                   </a>
@@ -101,6 +100,7 @@ const Header: React.FC = () => {
           </Link>
         </nav>
 
+        {/* Desktop: User Dropdown */}
         <div className="hidden md:block relative">
           <button
             onClick={() => setShowDropdown(!showDropdown)}
@@ -127,7 +127,6 @@ const Header: React.FC = () => {
               <button
                 className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
                 onClick={() => {
-                  // Logout logic here
                   setShowDropdown(false);
                   console.log("Logout clicked");
                 }}
@@ -138,6 +137,7 @@ const Header: React.FC = () => {
           )}
         </div>
 
+        {/* Mobile Menu Toggle */}
         <div className="md:hidden">
           <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? (
@@ -149,6 +149,7 @@ const Header: React.FC = () => {
         </div>
       </div>
 
+      {/* Mobile Navigation */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -196,42 +197,13 @@ const Header: React.FC = () => {
             >
               Tentang Kami
             </Link>
-            <div className="hidden md:block relative">
-              <button
-                onClick={() => setShowDropdown(!showDropdown)}
-                className="flex items-center space-x-2 border border-white rounded-full px-3 py-1 hover:bg-white hover:text-black transition"
-              >
-                <img
-                  src="https://i.pravatar.cc/40"
-                  alt="User"
-                  className="w-6 h-6 rounded-full"
-                />
-                <span className="text-sm font-medium">Ariodanul17</span>
-                <ChevronDownIcon className="h-4 w-4" />
-              </button>
-
-              {showDropdown && (
-                <div className="absolute right-0 mt-2 w-40 bg-white text-black rounded shadow-md z-20">
-                  <Link
-                    to="/profil"
-                    className="block px-4 py-2 hover:bg-gray-100 text-sm"
-                    onClick={() => setShowDropdown(false)}
-                  >
-                    Profil
-                  </Link>
-                  <button
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
-                    onClick={() => {
-                      // nanti tinggal pasang logout logic (misal clear token, redirect)
-                      setShowDropdown(false);
-                      console.log("Logout clicked");
-                    }}
-                  >
-                    Logout
-                  </button>
-                </div>
-              )}
-            </div>
+            <Link
+              to="/login"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block mt-2 px-5 py-2 bg-rosegold text-onyx font-semibold rounded-full text-center hover:bg-amber-400 transition-all"
+            >
+              Login
+            </Link>
           </motion.div>
         )}
       </AnimatePresence>
