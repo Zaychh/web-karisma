@@ -3,6 +3,7 @@ import {
   ChevronDownIcon,
   Bars3Icon,
   XMarkIcon,
+  ArrowRightEndOnRectangleIcon,
 } from "@heroicons/react/24/solid";
 import { BookOpenIcon, AcademicCapIcon } from "@heroicons/react/24/outline";
 import logo from "../../assets/logoka.png";
