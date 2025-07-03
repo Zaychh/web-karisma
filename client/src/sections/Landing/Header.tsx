@@ -53,7 +53,7 @@ const Header: React.FC = () => {
                   className="absolute top-full mt-2 w-80 bg-putih shadow-xl rounded-xl py-4 px-4 z-50 space-y-4"
                 >
                   <a
-                    href="#bootcamp"
+                    href="/bootcamp"
                     className="flex items-start gap-3 hover:bg-gray-100 p-3 rounded-lg text-onyx"
                   >
                     <AcademicCapIcon className="h-6 w-6 text-onyx" />
