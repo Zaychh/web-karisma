@@ -1,7 +1,8 @@
 // src/components/Header.tsx
 import React, { useState } from "react";
 import { ChevronDown } from "lucide-react";
-import logo from "../assets/logo.png";
+import logo from "../../assets/logoka.png";
+
 
 const Header = () => {
   const [showDropdown, setShowDropdown] = useState(false);
