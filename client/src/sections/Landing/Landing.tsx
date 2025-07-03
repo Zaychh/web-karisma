@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 import Header from "./Header";
 import Hero from "./Hero";
 import Info from "./Information";
@@ -12,6 +14,11 @@ import Contact from "./Contact";
 import Footer from "./Footer";
 
 function App() {
+  // Scroll to top ketika komponen About pertama kali dimount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  
   return (
     <>
       <Header />
