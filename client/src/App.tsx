@@ -2,11 +2,12 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import Landing from "./sections/Landing/Landing";
 import About from "./sections/Tentang/page";
 import Login from "./sections/LoginRegister/Login";
-import Register from "./sections/LoginRegister/register"
 import DashboardRouter from "./sections/dashboard/DashboardRouter";
 import CourseDetailFrontend from "./sections/dashboard/CourseDetailFrontend";
 import CourseDetailMysql from "./sections/dashboard/CourseDetailMysql";
 import CourseDetailLaravel from "./sections/dashboard/CourseDetailLaravel";
+import Register from "./sections/LoginRegister/register";
+import Dashboard from "./sections/dashboard/pages";
 function App() {
 
   return (
@@ -21,8 +22,7 @@ function App() {
         <Route path="/dashboard/kursus/frontend" element={<CourseDetailFrontend />} />
         <Route path="/dashboard/kursus/mysql" element={<CourseDetailMysql/>} />
         <Route path="/dashboard/kursus/laravel" element={<CourseDetailLaravel/>}/>
-
-
+        <Route path="/Dashboard" element={<Dashboard />} />
       </Routes>
     </>
   );

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { FaUser, FaLock } from 'react-icons/fa';
-import mascot from '../../assets/mascot.png';
+import { User, Lock, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { register } from '../../services/auth';
 
 export default function Register() {
@@ -10,32 +9,72 @@ export default function Register() {
     password: '',
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null);
+  const [errorMessage, setErrorMessage] = useState('');
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+
+    if (submitStatus === 'error') {
+      setSubmitStatus(null);
+      setErrorMessage('');
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form Submitted:', formData);
+
+    if (isSubmitting || submitStatus === 'success') return;
+
+    if (!formData.name || !formData.email || !formData.password) {
+      setSubmitStatus('error');
+      setErrorMessage('Semua field wajib diisi.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+    setErrorMessage('');
+
     try {
-      await register(formData);
-      alert('Register berhasil!');
-      window.location.href = '/Login';
+      await register({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: 'user', 
+      });
+
+      console.log('Form Submitted:', formData);
+      setSubmitStatus('success');
+
+      setTimeout(() => {
+        window.location.href = '/Login';
+      }, 2000);
     } catch (err: any) {
       console.log('Register gagal!', err);
-      alert(err.response?.data?.error || 'Register gagal!');
+      setSubmitStatus('error');
+      setErrorMessage(err.response?.data?.message || 'Registrasi gagal! Silakan coba lagi.');
+    } finally {
+      setIsSubmitting(false);
     }
-};
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen shadow-[0_5px_15px_rgba(0,0,0,0.1)] bg-gray-100">
       <div className="flex w-[900px] bg-white rounded-xl shadow-lg overflow-hidden">
-        {/* Left Side - Illustration */}
+        {/* Left Side */}
         <div className="w-1/2 bg-gradient-to-br from-[#5d69c0] via-[#2b3990] to-[#112151] flex items-center justify-center p-6">
-          <img src={mascot} alt="Characters" className="max-w-full h-auto" />
+          <div className="text-center text-white">
+            <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <User className="w-16 h-16 text-white" />
+            </div>
+            <h3 className="text-2xl font-bold mb-2">Join Us Today!</h3>
+            <p className="text-blue-100">Create your account and get started</p>
+          </div>
         </div>
 
-        {/* Right Side - Form */}
+        {/* Right Side */}
         <div className="w-1/2 p-10">
           <h2 className="text-3xl font-bold mb-6">
             Create
@@ -43,11 +82,27 @@ export default function Register() {
             Account
           </h2>
 
-          <form className="space-y-4" onSubmit={handleSubmit}>
+          {/* Status Messages */}
+          {submitStatus === 'success' && (
+            <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded-md flex items-center">
+              <CheckCircle className="mr-2 w-5 h-5" />
+              <span>Registrasi berhasil! Mengalihkan ke halaman login...</span>
+            </div>
+          )}
+
+          {submitStatus === 'error' && (
+            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md flex items-center">
+              <AlertCircle className="mr-2 w-5 h-5" />
+              <span>{errorMessage}</span>
+            </div>
+          )}
+
+          {/* Form Start */}
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
-              <div className="flex items-center border rounded-md px-3 py-2 bg-gray-100">
-                <FaUser className="text-gray-400 mr-2" />
+              <div className="flex items-center border rounded-md px-3 py-2 bg-gray-100 focus-within:border-blue-500 focus-within:bg-white transition-colors">
+                <User className="text-gray-400 mr-2 w-5 h-5" />
                 <input
                   type="text"
                   name="name"
@@ -56,29 +111,14 @@ export default function Register() {
                   placeholder="Username"
                   className="bg-transparent outline-none w-full"
                   required
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-              <div className="flex items-center border rounded-md px-3 py-2 bg-gray-100">
-                <FaLock className="text-gray-400 mr-2" />
-                <input
-                  type="password"
-                  name='password'
-                  placeholder="Password"
-                  className="bg-transparent outline-none w-full"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
+                  disabled={isSubmitting}
                 />
               </div>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <div className="flex items-center border rounded-md px-3 py-2 bg-gray-100">
+              <div className="flex items-center border rounded-md px-3 py-2 bg-gray-100 focus-within:border-blue-500 focus-within:bg-white transition-colors">
                 <svg
                   className="w-5 h-5 text-gray-400 mr-2"
                   fill="none"
@@ -90,27 +130,63 @@ export default function Register() {
                 </svg>
                 <input
                   type="email"
-                  name='email'
+                  name="email"
+                  value={formData.email}
                   placeholder="Email"
                   className="bg-transparent outline-none w-full"
-                  value={formData.email}
                   onChange={handleChange}
                   required
+                  disabled={isSubmitting}
                 />
               </div>
             </div>
 
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+              <div className="flex items-center border rounded-md px-3 py-2 bg-gray-100 focus-within:border-blue-500 focus-within:bg-white transition-colors">
+                <Lock className="text-gray-400 mr-2 w-5 h-5" />
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  placeholder="Password"
+                  className="bg-transparent outline-none w-full"
+                  onChange={handleChange}
+                  required
+                  disabled={isSubmitting}
+                />
+              </div>
+            </div>
+
+            {/* Submit Button */}
             <button
               type="submit"
-              className="w-full mt-4 bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 rounded-md"
+              disabled={isSubmitting || submitStatus === 'success'}
+              className={`w-full mt-6 font-semibold py-3 rounded-md transition-all duration-200 flex items-center justify-center ${
+                isSubmitting || submitStatus === 'success'
+                  ? 'bg-gray-400 cursor-not-allowed'
+                  : 'bg-blue-700 hover:bg-blue-800 hover:shadow-lg transform hover:-translate-y-0.5'
+              } text-white`}
             >
-              Sign Up
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="animate-spin mr-2 w-5 h-5" />
+                  Mendaftarkan...
+                </>
+              ) : submitStatus === 'success' ? (
+                <>
+                  <CheckCircle className="mr-2 w-5 h-5" />
+                  Berhasil!
+                </>
+              ) : (
+                'Sign Up'
+              )}
             </button>
           </form>
 
-          <p className="text-sm text-center text-gray-500 mt-4">
+          <p className="text-sm text-center text-gray-500 mt-6">
             Sudah punya akun?{' '}
-            <a href="/Login" className="text-blue-600 hover:underline">
+            <a href="/Login" className="text-blue-600 hover:underline font-medium transition-colors">
               Masuk
             </a>
           </p>
@@ -118,4 +194,4 @@ export default function Register() {
       </div>
     </div>
   );
-};
+}
