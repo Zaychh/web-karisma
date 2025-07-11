@@ -5,7 +5,7 @@ import Hero from "./Hero";
 import Info from "./Information";
 import Eksplor from "./Explor";
 import HeroSecond from "./Herosec";
-import Testi from "./Testimoni";
+import Testi from "./Testimoni"; 
 import Review from "./Review";
 import Partner from "./Partner";
 import Penghargaan from "./Award";

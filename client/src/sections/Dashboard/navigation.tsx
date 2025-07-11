@@ -3,7 +3,6 @@ import {
   ChevronDownIcon,
   Bars3Icon,
   XMarkIcon,
-  ArrowRightEndOnRectangleIcon,
 } from "@heroicons/react/24/solid";
 import { BookOpenIcon, AcademicCapIcon } from "@heroicons/react/24/outline";
 import logo from "../../assets/logoka.png";
@@ -15,6 +14,7 @@ const Header: React.FC = () => {
   const currentPath = location.pathname;
   const [openDropdown, setOpenDropdown] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   return (
     <header className="w-full sticky h-[90px] top-0 z-50 bg-onyx shadow-sm">
@@ -53,7 +53,7 @@ const Header: React.FC = () => {
                   className="absolute top-full mt-2 w-80 bg-putih shadow-xl rounded-xl py-4 px-4 z-50 space-y-4"
                 >
                   <a
-                    href="/bootcamp"
+                    href="#bootcamp"
                     className="flex items-start gap-3 hover:bg-gray-100 p-3 rounded-lg text-onyx"
                   >
                     <AcademicCapIcon className="h-6 w-6 text-onyx" />
@@ -99,16 +99,44 @@ const Header: React.FC = () => {
           </Link>
         </nav>
 
-        <div className="hidden md:block">
-          <Link
-            to="/login"
-            className="flex items-center gap-2 px-5 py-2 bg-rosegold text-onyx font-semibold rounded-full hover:bg-amber-400 transition-all"
+        {/* Desktop: User Dropdown */}
+        <div className="hidden md:block relative">
+          <button
+            onClick={() => setShowDropdown(!showDropdown)}
+            className="flex items-center space-x-2 border border-white rounded-full px-3 py-1 hover:bg-white hover:text-black transition"
           >
-            Login
-            <ArrowRightEndOnRectangleIcon className="h-5 w-5" />
-          </Link>
+            <img
+              src="https://i.pravatar.cc/40"
+              alt="User"
+              className="w-6 h-6 rounded-full"
+            />
+            <span className="text-sm font-medium">Ariodanul17</span>
+            <ChevronDownIcon className="h-4 w-4" />
+          </button>
+
+          {showDropdown && (
+            <div className="absolute right-0 mt-2 w-40 bg-white text-black rounded shadow-md z-20">
+              <Link
+                to="/profil"
+                className="block px-4 py-2 hover:bg-gray-100 text-sm"
+                onClick={() => setShowDropdown(false)}
+              >
+                Profil
+              </Link>
+              <button
+                className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+                onClick={() => {
+                  setShowDropdown(false);
+                  console.log("Logout clicked");
+                }}
+              >
+                Logout
+              </button>
+            </div>
+          )}
         </div>
 
+        {/* Mobile Menu Toggle */}
         <div className="md:hidden">
           <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? (
@@ -120,7 +148,7 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-
+      {/* Mobile Navigation */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -160,7 +188,7 @@ const Header: React.FC = () => {
               className="block text-putih hover:text-rosegold"
             >
               Blog
-            </Link> 
+            </Link>
             <Link
               to="/tentang-kami"
               onClick={() => setMobileMenuOpen(false)}
@@ -169,7 +197,7 @@ const Header: React.FC = () => {
               Tentang Kami
             </Link>
             <Link
-              to="/Login"
+              to="/login"
               onClick={() => setMobileMenuOpen(false)}
               className="block mt-2 px-5 py-2 bg-rosegold text-onyx font-semibold rounded-full text-center hover:bg-amber-400 transition-all"
             >
