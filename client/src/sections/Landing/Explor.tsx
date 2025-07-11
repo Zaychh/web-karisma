@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -13,6 +14,7 @@ import game from "../../assets/UnityGameDev.png";
 
 interface Course {
   id: number;
+  slug: string;
   title: string;
   duration: string;
   image: string;
@@ -23,6 +25,7 @@ const courses: Course[] = [
   // Slide 1
   {
     id: 1,
+    slug: "graphic-design-branding",
     title: "Bootcamp Graphic Design & Branding",
     duration: "3 atau 6 bulan",
     image: graph,
@@ -34,6 +37,7 @@ const courses: Course[] = [
   },
   {
     id: 2,
+    slug: "fullstack-web-development",
     title: "Bootcamp Full-Stack Web Development",
     duration: "3 atau 6 bulan",
     image: full,
@@ -46,6 +50,7 @@ const courses: Course[] = [
   },
   {
     id: 3,
+    slug: "back-end-development-golang",
     title: "Bootcamp Back-End Development: Golang",
     duration: "3 atau 6 bulan",
     image: back,
@@ -59,6 +64,7 @@ const courses: Course[] = [
   // Slide 2
   {
     id: 4,
+    slug: "ui-ux-product-design",
     title: "Bootcamp UI/UX & Product Design",
     duration: "3 atau 6 bulan",
     image: mock,
@@ -71,6 +77,7 @@ const courses: Course[] = [
   },
   {
     id: 5,
+    slug: "data-science-machine-learning",
     title: "Bootcamp Data Science & Machine Learning",
     duration: "3 atau 6 bulan",
     image: ml,
@@ -83,6 +90,7 @@ const courses: Course[] = [
   },
   {
     id: 6,
+    slug: "mobile-development-flutter",
     title: "Bootcamp Mobile Development (Flutter)",
     duration: "3 atau 6 bulan",
     image: mobile,
@@ -96,6 +104,7 @@ const courses: Course[] = [
   // Slide 3
   {
     id: 7,
+    slug: "cybersecurity-fundamentals",
     title: "Bootcamp Cybersecurity Fundamentals",
     duration: "3 atau 6 bulan",
     image: cyber,
@@ -108,6 +117,7 @@ const courses: Course[] = [
   },
   {
     id: 8,
+    slug: "cloud-engineering-aws-gcp",
     title: "Bootcamp Cloud Engineer (AWS/GCP)",
     duration: "3 atau 6 bulan",
     image: back,
@@ -120,6 +130,7 @@ const courses: Course[] = [
   },
   {
     id: 9,
+    slug: "game-development-unity",
     title: "Bootcamp Game Development Unity",
     duration: "3 atau 6 bulan",
     image: game,
@@ -162,11 +173,11 @@ const CourseCard = ({ course }: { course: Course }) => (
           </li>
         ))}
       </ul>
-      <div className="mt-auto">
-        <button className="py-2 w-full rounded-lg border border-gray-500 hover:border-bluberi hover:bg-bluberi hover:text-putih transition-all font-semibold">
+      <Link to={`/bootcamp/${course.slug}`} className="mt-auto">
+        <button className="py-2 w-full rounded-lg border border-gray-500 hover:border-bluberi hover:bg-bluberi hover:text-putih transition-all font-semibold cursor-pointer">
           Lebih Lanjut
         </button>
-      </div>
+      </Link>
     </div>
   </motion.div>
 );
@@ -198,10 +209,10 @@ const BootcampLanding = () => {
           kerja di dunia digital
         </p>
         <div className="mt-6 flex flex-col md:flex-row items-center justify-center gap-4">
-          <button className="bg-bluberi hover:bg-rosegold hover:text-onyx text-kertas px-12 py-2 rounded-lg text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg">
+          <button className="bg-bluberi hover:bg-rosegold hover:text-onyx text-kertas px-12 py-2 rounded-lg text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer">
             Bootcamp Course
           </button>
-          <button className="border-2 border-kertas text-kertas px-12 py-2 rounded-lg text-lg font-semibold transition-all duration-300 hover:bg-kertas hover:text-onyx hover:scale-105">
+          <button className="border-2 border-kertas text-kertas px-12 py-2 rounded-lg text-lg font-semibold transition-all duration-300 hover:bg-kertas hover:text-onyx hover:scale-105 cursor-pointer">
             Free Class
           </button>
         </div>
@@ -220,7 +231,7 @@ const BootcampLanding = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={handlePrev}
-            className="p-2 text-gray-300 hover:text-white transition-all"
+            className="p-2 text-gray-300 hover:text-white transition-all cursor-pointer"
           >
             <ChevronLeft size={28} />
           </button>
@@ -242,7 +253,7 @@ const BootcampLanding = () => {
 
           <button
             onClick={handleNext}
-            className="p-2 text-gray-300 hover:text-white transition-all"
+            className="p-2 text-gray-300 hover:text-white transition-all cursor-pointer"
           >
             <ChevronRight size={28} />
           </button>

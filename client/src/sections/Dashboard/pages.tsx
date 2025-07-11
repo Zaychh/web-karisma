@@ -1,4 +1,4 @@
-import Head from './Head';
+import Head from './kepala';
 import Courses from './HeroCourse';
 import MyProgress from './MyProgress';
 import MyAchievement from './MyAch';

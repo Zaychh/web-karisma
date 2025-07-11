@@ -52,8 +52,8 @@ const Header: React.FC = () => {
                   transition={{ duration: 0.2 }}
                   className="absolute top-full mt-2 w-80 bg-putih shadow-xl rounded-xl py-4 px-4 z-50 space-y-4"
                 >
-                  <a
-                    href="/bootcamp"
+                  <Link
+                    to="/bootcamp"
                     className="flex items-start gap-3 hover:bg-gray-100 p-3 rounded-lg text-onyx"
                   >
                     <AcademicCapIcon className="h-6 w-6 text-onyx" />
@@ -63,9 +63,9 @@ const Header: React.FC = () => {
                         Hadir untuk level up skill digital kamu dengan real-life project.
                       </p>
                     </div>
-                  </a>
-                  <a
-                    href="#free-class"
+                  </Link>
+                  <Link
+                    to="/free-class"
                     className="flex items-start gap-3 hover:bg-gray-100 p-3 rounded-lg text-onyx"
                   >
                     <BookOpenIcon className="h-6 w-6 text-onyx" />
@@ -75,7 +75,7 @@ const Header: React.FC = () => {
                         Cobain Pengalaman Belajar Gratis di Karisma Academy!
                       </p>
                     </div>
-                  </a>
+                  </Link>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -139,20 +139,20 @@ const Header: React.FC = () => {
             </Link>
             <div className="space-y-2">
               <p className="text-putih font-semibold">Program Kami</p>
-              <a
-                href="#bootcamp"
+              <Link
+                to="/bootcamp"
                 className="block text-sm text-gray-300 hover:text-rosegold"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Bootcamp
-              </a>
-              <a
-                href="#free-class"
+              </Link>
+              <Link
+                to="/free-class"
                 className="block text-sm text-gray-300 hover:text-rosegold"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Free Class
-              </a>
+              </Link>
             </div>
             <Link
               to="/blog"

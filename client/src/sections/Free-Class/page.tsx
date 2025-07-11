@@ -1,12 +1,12 @@
 import Header from "../Landing/Header";
-import About from "./about";
-import Footer from "../Landing/Footer";
+import Foot from "../Landing/Footer";
+import Fclass from "./Free-Class";
 function App() {
     return (
         <>
             <Header />
-            <About />
-            <Footer />
+            <Fclass />
+            <Foot />
         </>
     );
 }

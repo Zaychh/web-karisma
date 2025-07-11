@@ -49,7 +49,7 @@ const faqs = [
   {
   question: "Apakah ada sistem refund?",
   answer: (
-    <p className="text-sm leading-relaxed text-gray-300">
+    <p className="text-lg leading-relaxed text-gray-300">
       Setelah transaksi kamu berhasil dan terkonfirmasi, sayangnya kamu tidak bisa melakukan refund dalam kondisi apapun, karena pembayaran bersifat final.
       Jadi, pastikan dulu semua data pemesanan kamu (program pilihan, tanggal mulai, jadwal kelas, dll.) sudah benar sebelum klik "Bayar".
       Cek dengan teliti agar aman dan nyaman!
@@ -59,7 +59,7 @@ const faqs = [
 {
   question: "Apakah ada fasilitas penyaluran kerja?",
   answer: (
-    <p className="text-sm leading-relaxed text-gray-300">
+    <p className="text-lg leading-relaxed text-gray-300">
       Karisma Academy menyediakan fasilitas magang bagi kamu yang ingin merasakan pengalaman langsung di dunia kerja.
       Fasilitas ini tersedia pada program KaBoost +.
     </p>
@@ -86,7 +86,7 @@ export default function FAQSection() {
             <div key={idx} className="border-b border-ashh pb-4">
               <button
                 onClick={() => toggle(idx)}
-                className="w-full flex justify-between items-center text-left text-white font-medium focus:outline-none"
+                className="w-full flex justify-between items-center text-left text-white font-medium focus:outline-none cursor-pointer"
               >
                 <span>{faq.question}</span>
                 <motion.div
@@ -104,7 +104,7 @@ export default function FAQSection() {
                     animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="mt-3 text-gray-300 text-sm leading-relaxed"
+                    className="mt-3 text-gray-300 text-lg leading-relaxed"
                   >
                     {faq.answer}
                   </motion.div>
