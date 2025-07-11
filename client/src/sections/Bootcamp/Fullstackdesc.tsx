@@ -1,0 +1,11 @@
+export const FullstackDesc = () => (
+  <div className="space-y-6">
+    <h3 className="text-4xl font-bold text-rosegold leading-snug">
+      Koding Inovatif, Karier <br /> Produktif! Jadi Fullstack <br /> Web Developer Specialist
+    </h3>
+  <p className="text-lg text-gray-300 leading-relaxed">
+    <strong>Bootcamp Full-stack Web Development Karisma Academy</strong> adalah program intensif berbasis proyek yang akan membekalimu dengan <strong>skill developing web yang paling dicari industri</strong>. Dalam <strong>3 bulan intensif,</strong> kamu akan belajar langkah demi langkah dari <strong>fundamental hingga level profesional,</strong> termasuk pembuatan website dengan fondasi web esensial (HTML, CSS, JavaScript, Git), pengembangan <strong>front-end</strong> interaktif dan responsif menggunakan Vite, React, Next.js, Tailwind CSS, serta TypeScript untuk penulisan kode yang lebih aman dan terstruktur. <strong>Di sisi back-end,</strong> kamu akan membangun RESTful API yang tangguh dengan Node.js dan Express.js, merancang dan mengelola database relasional menggunakan MySQL, serta memahami <strong>proses pengujian dasar dan deployment aplikasi ke server.</strong> <br/> <br />Sebagai <strong>Full-stack Web Developer,</strong> kamu akan berperan penting dalam keseluruhan siklus hidup <strong>pengembangan aplikasi web.</strong> Kamu akan bertanggung jawab merancang, mengembangkan, menguji, dan memelihara aplikasi baik <strong>dari sisi client (front-end)</strong> maupun <strong>sisi server (back-end).</strong> Ini mencakup pembuatan antarmuka pengguna (UI) yang intuitif dan menarik, pengembangan logika bisnis aplikasi, pengelolaan alur data dan interaksi dengan database, pembuatan dan integrasi API, serta memastikan performa, keamanan, dan skalabilitas aplikasi web yang kamu bangun menggunakan <strong>teknologi modern seperti Next.js, React, Tailwind CSS, dan TypeScript</strong> di sisi front-end, serta <strong>Node.js, Express.js, MySQL, dan Git</strong> di sisi back-end. Selain itu, Full Stack Web Developer juga menjadi penghubung teknis antar tim, berkolaborasi erat dengan UI/UX designer, product manager, dan stakeholder lainnya untuk <strong>mewujudkan solusi digital inovatif yang efektif dan berdaya saing tinggi.</strong>
+  </p>
+  </div>
+
+);

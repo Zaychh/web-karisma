@@ -1,4 +1,4 @@
-import Header from './navigation';
+import Header from './head';
 import Courses from './HeroCourse';
 import MyProgress from './MyProgress';
 import MyAchievement from './MyAch';
