@@ -34,7 +34,7 @@ const BootcampDetail = () => {
       </div>
 
       {/* Garis Pemisah */}
-      <div className="my-12 border-t border-gray-600 w-full max-w-md mx-auto"></div>
+      <div className="my-12 border-t-4 border-gray-600 w-full max-w-md mx-auto"></div>
 
       {/* Section lanjutan: Deskripsi & List Pembelajaran */}
       <div className="mt-20 flex flex-col lg:flex-row gap-12">

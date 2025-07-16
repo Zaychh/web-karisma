@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { Link } from "react-router-dom";
+
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useEffect } from "react";
 
 import graph from "../../assets/graphdes.png";
 import back from "../../assets/backend.png";
@@ -9,10 +10,10 @@ import full from "../../assets/fullstack.png";
 import mock from "../../assets/Mock.png";
 import ml from "../../assets/Datascience.png";
 
-// CourseCard Component
-const CourseCard = ({ course }: { course: Course }) => (
+// FreeClassCard Component
+const FreeClassCard = ({ freeClass }: { freeClass: FreeClass }) => (
   <motion.div
-    key={course.id}
+    key={freeClass.id}
     className="bg-ashh rounded-2xl w-[90vw] sm:w-[320px] flex-shrink-0 overflow-hidden border border-gray-600 hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
     initial={{ opacity: 0, y: 30 }}
     animate={{ opacity: 1, y: 0 }}
@@ -20,8 +21,8 @@ const CourseCard = ({ course }: { course: Course }) => (
     transition={{ duration: 0.5, ease: "easeIn" }}
   >
     <img
-      src={course.image}
-      alt={course.title}
+      src={freeClass.image}
+      alt={freeClass.title}
       className="w-full h-[180px] object-cover"
     />
     <div className="p-5 flex flex-col h-[460px]">
@@ -30,20 +31,20 @@ const CourseCard = ({ course }: { course: Course }) => (
           InspiraKarisma
         </span>
       </div>
-      <h3 className="text-lg font-bold text-white mb-3">{course.title}</h3>
+      <h3 className="text-lg font-bold text-white mb-3">{freeClass.title}</h3>
       <ul className="space-y-2 text-sm text-gray-300 mb-4 overflow-auto">
-        {course.skills.map((s, i) => (
+        {freeClass.skills.map((s, i) => (
           <li key={i} className="flex items-start gap-2">
             <div className="mt-1 w-2 h-2 bg-green-400 rounded-full" />
             <span>{s}</span>
           </li>
         ))}
       </ul>
-      <div className="mt-auto">
-        <button className="py-2 w-full rounded-lg border border-gray-500 hover:border-white hover:bg-white hover:text-black transition-all font-semibold cursor-pointer">
+      <Link to={`/free-class/${freeClass.slug}`} className="mt-auto">
+        <button className="py-2 w-full rounded-lg border border-gray-500 hover:border-bluberi hover:bg-bluberi hover:text-putih transition-all font-semibold cursor-pointer">
           Lebih Lanjut
         </button>
-      </div>
+      </Link>
     </div>
   </motion.div>
 );
@@ -63,7 +64,7 @@ const HeroSec = () => {
   }, []);
 
   const pageSize = isMobile ? 1 : 3;
-  const totalPages = Math.ceil(courses.length / pageSize);
+  const totalPages = Math.ceil(freeClasses.length / pageSize);
 
   const handleNext = () => {
     setPage((prev) => (prev + 1) % totalPages);
@@ -77,7 +78,7 @@ const HeroSec = () => {
     setPage(p);
   };
 
-  const currentCourses = courses.slice(page * pageSize, (page + 1) * pageSize);
+  const currentClasses = freeClasses.slice(page * pageSize, (page + 1) * pageSize);
 
   return (
     <section className="bg-ashh text-white py-20 px-6 md:px-16">
@@ -106,8 +107,8 @@ const HeroSec = () => {
               exit={{ opacity: 0, y: -40 }}
               transition={{ duration: 0.5 }}
             >
-              {currentCourses.map((course) => (
-                <CourseCard key={course.id} course={course} />
+              {currentClasses.map((freeClass) => (
+                <FreeClassCard key={freeClass.id} freeClass={freeClass} />
               ))}
             </motion.div>
           </AnimatePresence>
@@ -154,18 +155,22 @@ const HeroSec = () => {
 
 export default HeroSec;
 
-// Course Interface & Data
-interface Course {
+// FreeClass Interface & Data
+export interface FreeClass {
   id: number;
+  slug: string;
   title: string;
+  title2: string;
   image: string;
   skills: string[];
 }
 
-const courses: Course[] = [
+export const freeClasses: FreeClass[] = [
   {
     id: 1,
+    slug: "basic-graphic-design-untuk-sosial-media",
     title: "Basic Graphic Design untuk Sosial Media",
+    title2: "Graphic Design",
     image: graph,
     skills: [
       "Prinsip desain layout & warna",
@@ -175,7 +180,9 @@ const courses: Course[] = [
   },
   {
     id: 2,
+    slug: "ngoding-web-dari-nol-html-css-js",
     title: "Ngoding Web dari Nol (HTML, CSS, JS)",
+    title2: "Web Development",
     image: full,
     skills: [
       "Cara bikin landing page sederhana",
@@ -185,7 +192,9 @@ const courses: Course[] = [
   },
   {
     id: 3,
+    slug: "ngulik-devops-dan-docker-dari-nol",
     title: "Ngulik DevOps & Docker dari Nol",
+    title2: "Web Development",
     image: back,
     skills: [
       "Apa itu Docker? Kenapa penting?",
@@ -195,7 +204,9 @@ const courses: Course[] = [
   },
   {
     id: 4,
+    slug: "bikin-portfolio-web-pribadi",
     title: "Bikin Portfolio Web Pribadi",
+    title2: "Web Development",
     image: mock,
     skills: [
       "Tools gratis untuk hosting (Netlify/Vercel)",
@@ -205,7 +216,9 @@ const courses: Course[] = [
   },
   {
     id: 5,
+    slug: "career-prep-cara-bangun-personal-branding-di-linkedin",
     title: "Career Prep — Cara Bangun Personal Branding di LinkedIn",
+    title2: "Career Development",
     image: ml,
     skills: [
       "Optimasi profil LinkedIn",
@@ -213,5 +226,4 @@ const courses: Course[] = [
       "Tips koneksi & cari mentor",
     ],
   },
-  
 ];
