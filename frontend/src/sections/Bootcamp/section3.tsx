@@ -13,15 +13,15 @@ import mobile from "../../assets/MobDev.png";
 import cyber from "../../assets/CybSec.png";
 import game from "../../assets/UnityGameDev.png";
 
-import { FullstackDesc } from "../Bootcamp/Fullstackdesc";
-import { GraphicDesignDesc } from "../Bootcamp/GraphicDesignDesc";
-import { GolangDesc } from "../Bootcamp/GolangDesc";
-import { UIDesignDesc } from "../Bootcamp/UIDesignDesc";
-import { DataScienceDesc } from "../Bootcamp/DataScienceDesc";
-import { MobileDevDesc } from "../Bootcamp/MobileDevDesc";
-import { CybersecurityDesc } from "../Bootcamp/CybersecurityDesc";
-import { CloudEngineerDesc } from "../Bootcamp/CloudEngineerDesc";
-import { GameDevDesc } from "../Bootcamp/GameDevDesc";
+import { FullstackDesc } from "./Fullstackdesc";
+import { GraphicDesignDesc } from "./GraphicDesignDesc";
+import { GolangDesc } from "./GolangDesc";
+import { UIDesignDesc } from "./UIDesignDesc";
+import { DataScienceDesc } from "./DataScienceDesc";
+import { MobileDevDesc } from "./MobileDevDesc";
+import { CybersecurityDesc } from "./CybersecurityDesc";
+import { CloudEngineerDesc } from "./CloudEngineerDesc";
+import { GameDevDesc } from "./GameDevDesc";
 
 import kuning from "../../assets/Foto1.png";
 import biru from "../../assets/Foto3.png";

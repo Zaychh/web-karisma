@@ -1,4 +1,4 @@
-import BlankImage from "../../assets/ultramen.png";
+import Ultramen from "../../assets/ultramen.png";
 import Icon1 from "../../assets/icon1.png";
 import Icon2 from "../../assets/icon2.png";
 import Icon3 from "../../assets/icon3.png";
@@ -7,7 +7,7 @@ import Icon5 from "../../assets/icon5.png";
 
 export default function Hero() {
   return (
-    <div className="bg-irreng text-white px-6 md:px-20 py-16 space-y-12">
+    <div className="bg-[#262626] text-white px-6 md:px-20 py-16 space-y-12">
       {/* Top Title & Description */}
       <div className="text-center space-y-4">
         <h1 className="text-2xl md:text-3xl font-bold">
@@ -32,7 +32,7 @@ export default function Hero() {
             Kami bukan sekadar mengajar. Program bootcamp intensif selama 3–4 bulan ini dirancang untuk mempersiapkan kariermu dengan pendekatan yang aktif dan berbasis praktik.
           </p>
           <img
-            src={BlankImage}
+            src={Ultramen}
             alt="Illustration"
             className="hidden md:block w-full md:w-auto max-w-xs mt-4"
           />
