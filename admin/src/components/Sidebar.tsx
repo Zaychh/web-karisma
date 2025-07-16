@@ -7,8 +7,8 @@ const Sidebar = () => {
 
   const navItems = [
     { label: "Dashboard", icon: <Home size={20} />, to: "/dashboard" },
-    { label: "Courses", icon: <LayoutGrid size={20} />, to: "/courses" },
-    { label: "Instructors", icon: <Users size={20} />, to: "/users" },
+    { label: "Courses", icon: <LayoutGrid size={20} />, to: "/bootcamp" },
+    { label: "Instructors", icon: <Users size={20} />, to: "/instructors" },
     { label: "Sertificate", icon: <IdCard size={20} />, to: "/sertifikat" },
     { label: "Transaction", icon: <Wallet size={20} />, to: "/transaction" },
     { label: "Stats & Reports", icon: <ChartLine size={20} />, to: "/stats" },
