@@ -72,7 +72,7 @@ function SocialButton({ label, color, iconSrc, url, glowColor }: SocialButtonPro
       whileTap={{ scale: 0.96 }}
       transition={{ type: 'spring', stiffness: 300, damping: 15 }}
       onClick={() => window.open(url, '_blank', 'noopener,noreferrer')}
-      className={`w-[180px] h-[48px] shine-hover flex items-center justify-center gap-2 px-4 rounded-full bg-gradient-to-r ${color} text-white text-sm font-medium font-poppins shadow-md z-20`}
+      className={`w-[180px] h-[48px] shine-hover flex items-center justify-center gap-2 px-4 rounded-full bg-gradient-to-r ${color} text-white text-sm font-medium font-poppins shadow-md z-20 cursor-pointer`}
     >
       <img src={iconSrc} alt={label} className="w-5 h-5" />
       {label}
