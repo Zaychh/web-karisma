@@ -16,7 +16,7 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/instructors', instructorRoutes);
-app.use('/api/program', programRoutes);
+app.use('/api/programs', programRoutes);
 app.use('/uploads', express.static('uploads'));
 
 // Health check endpoint
