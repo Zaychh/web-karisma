@@ -11,7 +11,7 @@ const [mastery, setMastery] = useState<string[]>([]);
 useEffect(() => {
   const fetchMastery = async () => {
     try {
-              console.log('VITE_API_URL:', import.meta.env.VITE_API_URL);
+      console.log('VITE_API_URL:', import.meta.env.VITE_API_URL);
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/instructors/mastery`);
       const data = await res.json();
       console.log('[DEBUG] mastery:', data);

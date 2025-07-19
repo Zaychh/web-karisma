@@ -1,6 +1,7 @@
-// AddProgramForm.tsx (Final Version + Backend Integrated)
+// AddProgramForm.tsx (dengan auto-redirect)
 
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
@@ -11,7 +12,7 @@ import {
   SelectContent,
   SelectItem,
 } from "../ui/select";
-import axios from "axios";
+import api from "../../lib/api";
 
 interface Tool {
   judul: string;
@@ -33,22 +34,43 @@ interface Sesi {
   };
 }
 
+interface Instructor {
+  instructor_id: number;
+  name: string;
+}
+
 export default function AddProgramForm() {
+  const navigate = useNavigate(); // Hook untuk navigasi
+  const [isLoading, setIsLoading] = useState(false); // Loading state
+
   const [form, setForm] = useState({
     title: "",
     description: "",
     price: "",
     category: "",
     image: null as File | null,
+    instructor_id: 0,
   });
 
+  const [instructors, setInstructors] = useState<Instructor[]>([]);
   const [tools, setTools] = useState<Tool[]>([]);
   const [sesi, setSesi] = useState<Sesi[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
 
   useEffect(() => {
-    axios
-      .get("/api/program/categories")
+    api
+      .get("/api/instructors")
+      .then((res) => {
+        setInstructors(res.data as Instructor[]);
+      })
+      .catch((err) => {
+        console.error("Gagal fetch instuktur", err);
+      });
+  }, []);
+
+  useEffect(() => {
+    api
+      .get("/api/programs/categories")
       .then((res) => {
         const result = res.data;
 
@@ -106,12 +128,38 @@ export default function AddProgramForm() {
   };
 
   const handleSubmit = async () => {
+    // Validasi form sebelum submit
+    if (!form.title || !form.description || !form.price || !form.category) {
+      alert("Mohon lengkapi semua field yang wajib diisi!");
+      return;
+    }
+
+    if (form.instructor_id === 0) {
+      alert("Mohon pilih instruktur!");
+      return;
+    }
+
+    setIsLoading(true);
+    
     const data = new FormData();
     data.append("title", form.title);
-    data.append("description", form.description);
-    data.append("price", form.price);
-    data.append("category", form.category);
-    if (form.image) data.append("image", form.image);
+    data.append("deskripsi", form.description);
+    data.append("harga", form.price);
+    data.append("categories", form.category);
+    if (form.image) data.append("image_cover", form.image);
+    if (form.instructor_id) {
+      data.append("instructor_id", form.instructor_id.toString());
+    }
+
+    // Log data untuk debugging
+    console.log("Form data yang akan dikirim:");
+    console.log("Title:", form.title);
+    console.log("Description:", form.description);
+    console.log("Price:", form.price);
+    console.log("Category:", form.category);
+    console.log("Instructor ID:", form.instructor_id);
+    console.log("Tools count:", tools.length);
+    console.log("Sessions count:", sesi.length);
 
     tools.forEach((tool, i) => {
       data.append(`tools[${i}][judul]`, tool.judul);
@@ -131,12 +179,75 @@ export default function AddProgramForm() {
       data.append(`sesi[${i}][tugas][soal_tugas]`, s.tugas.soal_tugas);
     });
 
+    // Debug FormData sebelum kirim
+    debugFormData(data);
+
     try {
-      await axios.post("/api/program", data);
+      const response = await api.post("/api/programs", data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      
+      console.log("Response dari server:", response.data);
+      
+      // Berhasil - tampilkan alert dan redirect
       alert("Program berhasil ditambahkan");
-    } catch (err) {
-      console.error("Gagal submit:", err);
+      
+      // Redirect ke halaman daftar program
+      navigate("/bootcamp");
+      
+    } catch (err: any) {
+      console.error("Error detail:", err);
+      
+      // Tampilkan error yang lebih detail
+      if (err.response) {
+        console.error("Response data:", err.response.data);
+        console.error("Response status:", err.response.status);
+        console.error("Response headers:", err.response.headers);
+        
+        // Coba ekstrak error message dari response
+        let errorMessage = "Gagal menambahkan program.";
+        if (err.response.data?.message) {
+          errorMessage = err.response.data.message;
+        } else if (err.response.data?.error) {
+          errorMessage = err.response.data.error;
+        }
+        
+        alert(`Error: ${errorMessage}`);
+      } else if (err.request) {
+        console.error("Request error:", err.request);
+        alert("Tidak dapat terhubung ke server. Periksa koneksi internet Anda.");
+      } else {
+        console.error("Error:", err.message);
+        alert("Terjadi kesalahan. Silakan coba lagi.");
+      }
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  // Fungsi untuk membatalkan dan kembali
+  const handleCancel = () => {
+    navigate(-1); // Kembali ke halaman sebelumnya
+    // atau navigate("/programs"); // Kembali ke halaman tertentu
+  };
+
+  // Fungsi untuk debug FormData
+  const debugFormData = (formData: FormData) => {
+    console.log("=== FormData Debug ===");
+    for (let [key, value] of formData.entries()) {
+      if (value instanceof File) {
+        console.log(`${key}:`, {
+          name: value.name,
+          size: value.size,
+          type: value.type
+        });
+      } else {
+        console.log(`${key}:`, value);
+      }
+    }
+    console.log("=== End FormData Debug ===");
   };
 
   return (
@@ -319,13 +430,41 @@ export default function AddProgramForm() {
         </Button>
       </div>
 
+      <Select
+        value={form.instructor_id?.toString()}
+        onValueChange={(v) => setForm({ ...form, instructor_id: parseInt(v) })}
+      >
+        <SelectTrigger>
+          <SelectValue placeholder="Pilih Instruktur" />
+        </SelectTrigger>
+        <SelectContent className="max-h-64 overflow-y-auto">
+          {instructors.map((inst) => (
+            <SelectItem
+              key={inst.instructor_id}
+              value={inst.instructor_id.toString()}
+            >
+              {inst.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
       {/* Submit */}
       <div className="flex justify-end gap-3">
-        <Button type="button" variant="outline">
+        <Button 
+          type="button" 
+          variant="outline"
+          onClick={handleCancel}
+          disabled={isLoading}
+        >
           Cancel
         </Button>
-        <Button type="submit" onClick={handleSubmit}>
-          Save
+        <Button 
+          type="submit" 
+          onClick={handleSubmit}
+          disabled={isLoading}
+        >
+          {isLoading ? "Saving..." : "Save"}
         </Button>
       </div>
     </div>
