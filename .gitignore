@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+.vite/
+dist/
+build/
+
+# System
+.DS_Store
+Thumbs.db
+
+# Env & Local
+.env
+*.local
+
+# Editor & IDE
+.vscode/
+.idea/
+*.log
+
+# Optional Vite dev cache
+frontend/node_modules/.vite/
