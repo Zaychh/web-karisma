@@ -5,7 +5,7 @@ import illust2 from "../../assets/sunda.png";
 const BottomSection = () => {
   return (
     <section className="bg-ashh text-white px-6 md:px-20 py-16 md:py-28">
-      <div className="bg-irreng rounded-xl px-8 py-10 md:py-14 flex flex-col md:flex-row items-center justify-between gap-8">
+      <div className="bg-abyssal rounded-xl px-8 py-10 md:py-14 flex flex-col md:flex-row items-center justify-between gap-8">
         {/* Teks */}
         <div className="md:w-1/2">
           <h3 className="text-2xl md:text-3xl font-bold mb-6 leading-snug">

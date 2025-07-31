@@ -7,9 +7,15 @@ import {
 import { BookOpenIcon, AcademicCapIcon } from "@heroicons/react/24/outline";
 import logo from "../../assets/logoka.png";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link, useLocation } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
+import DefaultPng from "../../assets/default-avatar.png";
 
 const Header: React.FC = () => {
+  const BASE_URL = "http://localhost:3000";
+  const auth = useAuth();
+  const user = auth.user;
+  const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
   const [openDropdown, setOpenDropdown] = useState(false);
@@ -26,12 +32,21 @@ const Header: React.FC = () => {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex gap-10 relative">
           <Link
-            to="/Home"
+            to="/dashboard"
             className={`${
-              currentPath === "/Home" ? "text-rosegold" : "text-putih"
+              currentPath === "/dashboard" ? "text-rosegold" : "text-putih"
             } hover:text-rosegold font-medium font-poppins`}
           >
             Home
+          </Link>
+
+          <Link
+            to="/inventory"
+            className={`${
+              currentPath === "/inventory" ? "text-rosegold" : "text-putih"
+            } hover:text-rosegold font-medium font-poppins`}
+          >
+            Inventori
           </Link>
 
           <div
@@ -52,20 +67,21 @@ const Header: React.FC = () => {
                   transition={{ duration: 0.2 }}
                   className="absolute top-full mt-2 w-80 bg-putih shadow-xl rounded-xl py-4 px-4 z-50 space-y-4"
                 >
-                  <a
-                    href="#bootcamp"
+                  <Link
+                    to="/bootcamp"
                     className="flex items-start gap-3 hover:bg-gray-100 p-3 rounded-lg text-onyx"
                   >
                     <AcademicCapIcon className="h-6 w-6 text-onyx" />
                     <div>
                       <p className="font-semibold">Bootcamp</p>
                       <p className="text-sm">
-                        Hadir untuk level up skill digital kamu dengan real-life project.
+                        Hadir untuk level up skill digital kamu dengan real-life
+                        project.
                       </p>
                     </div>
-                  </a>
-                  <a
-                    href="#free-class"
+                  </Link>
+                  <Link
+                    to="/free-class"
                     className="flex items-start gap-3 hover:bg-gray-100 p-3 rounded-lg text-onyx"
                   >
                     <BookOpenIcon className="h-6 w-6 text-onyx" />
@@ -75,7 +91,7 @@ const Header: React.FC = () => {
                         Cobain Pengalaman Belajar Gratis di Karisma Academy!
                       </p>
                     </div>
-                  </a>
+                  </Link>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -101,34 +117,42 @@ const Header: React.FC = () => {
 
         {/* Desktop: User Dropdown */}
         <div className="hidden md:block relative">
-          <button
-            onClick={() => setShowDropdown(!showDropdown)}
-            className="flex items-center space-x-2 border border-white rounded-full px-3 py-1 hover:bg-white hover:text-black transition"
-          >
-            <img
-              src="https://i.pravatar.cc/40"
-              alt="User"
-              className="w-6 h-6 rounded-full"
-            />
-            <span className="text-sm font-medium">Ariodanul17</span>
-            <ChevronDownIcon className="h-4 w-4" />
-          </button>
+          {user ? (
+            <button
+              onClick={() => setShowDropdown(!showDropdown)}
+              className="flex items-center space-x-2 border border-white text-white rounded-full px-3 py-1 hover:bg-white hover:text-black transition"
+            >
+              <img
+                src={
+                user?.image
+                  ? `${BASE_URL}/uploads/${user.image}`
+                  : (DefaultPng as string)
+              }
+                alt="User"
+                className="w-6 h-6 rounded-full"
+              />
+              <span className="text-sm font-medium">{user.name}</span>
+              <ChevronDownIcon className="h-4 w-4" />
+            </button>
+          ) : (
+            <div className="w-[100px] h-8 bg-gray-600 rounded-full animate-pulse"></div>
+          )}
 
           {showDropdown && (
             <div className="absolute right-0 mt-2 w-40 bg-white text-black rounded shadow-md z-20">
               <Link
-                to="/profil"
+                to="/profile/my-profile"
                 className="block px-4 py-2 hover:bg-gray-100 text-sm"
                 onClick={() => setShowDropdown(false)}
               >
-                Profil
+                My Profil
               </Link>
               <button
-                className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
                 onClick={() => {
-                  setShowDropdown(false);
-                  console.log("Logout clicked");
+                  auth.logout();
+                  navigate("/Home");
                 }}
+                className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
               >
                 Logout
               </button>
@@ -159,28 +183,35 @@ const Header: React.FC = () => {
             className="md:hidden bg-onyx px-6 py-4 space-y-4"
           >
             <Link
-              to="/Home"
+              to="/dashboard"
               onClick={() => setMobileMenuOpen(false)}
               className="block text-putih hover:text-rosegold"
             >
               Home
             </Link>
+            <Link
+              to="/inventory"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block text-putih hover:text-rosegold"
+            >
+              Inventory
+            </Link>
             <div className="space-y-2">
               <p className="text-putih font-semibold">Program Kami</p>
-              <a
-                href="#bootcamp"
+              <Link
+                to="/bootcamp"
                 className="block text-sm text-gray-300 hover:text-rosegold"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Bootcamp
-              </a>
-              <a
-                href="#free-class"
+              </Link>
+              <Link
+                to="/free-class"
                 className="block text-sm text-gray-300 hover:text-rosegold"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Free Class
-              </a>
+              </Link>
             </div>
             <Link
               to="/blog"

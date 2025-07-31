@@ -1,4 +1,3 @@
-import React from 'react';
 import workerCat from '../../assets/workercat.png';
 import chillCat from '../../assets/Chillcat.png';
 

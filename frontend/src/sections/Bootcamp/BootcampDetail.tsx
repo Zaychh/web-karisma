@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { courses } from "./section3";
 
-import Header from "../Landing/Header";
 import Section1 from "./detail-head";
 import Section2 from "./Detail-section2";
 import Section3 from "./Detail-section3";
@@ -26,7 +25,6 @@ function Detail() {
 
     return (
         <>
-            <Header />
             <Section1 />
             <Section2 />
             <Section3 />

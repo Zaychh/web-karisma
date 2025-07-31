@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import t1 from "../../assets/chico.png";
 import t2 from "../../assets/Kim.png";
 import t3 from "../../assets/Dianaa.png";
@@ -54,8 +55,20 @@ const testimonials = [
 ];
 
 export default function DetailSection4({ data }: { data: Course }) {
+    const navigate = useNavigate();
+
+      const handleDaftar = (planName: string, price: number) => {
+        navigate("/pembayaran", {
+          state: {
+            title: `${data.title} - ${planName}`,
+            price,
+            slug: data.slug, 
+          },
+        });
+      };
+
     return (
-        <section className="bg-irreng text-white py-20 px-6 md:px-16 min-h-screen font-poppins">
+        <section className="bg-abyssal text-white py-20 px-6 md:px-16 min-h-screen font-poppins">
             {/* Heading */}
             <div className="text-center mb-12">
                 <h2 className="text-3xl md:text-4xl text-rosegold font-bold">
@@ -89,31 +102,37 @@ export default function DetailSection4({ data }: { data: Course }) {
                 </div>
             </div>
 
-            {/* Pricing Section */}
-            <div className="mt-20">
-                <h3 className="text-center text-2xl md:text-3xl font-bold mb-10">
-                    Investasi Terbaik dan Bersahabat buat Kamu
-                </h3>
+                  {/* Pricing Section */}
+      <div className="mt-20">
+        <h3 className="text-center text-2xl md:text-3xl font-bold mb-10">
+          Investasi Terbaik dan Bersahabat buat Kamu
+        </h3>
 
-                {/* Mobile Scrollable Cards */}
-                <div className="block md:hidden overflow-x-auto no-scrollbar pb-6 pl-4 pr-4">
-                    <div className="flex gap-6 w-max">
-                        {data.pricing.map((plan, idx) => (
-                            <div key={idx} className="flex-shrink-0 w-[380px]">
-                                <PricingCard plan={plan} />
-                            </div>
-                        ))}
-                    </div>
-                </div>
+        {/* Mobile View */}
+        <div className="block md:hidden overflow-x-auto no-scrollbar pb-6 pl-4 pr-4">
+          <div className="flex gap-6 w-max">
+            {data.pricing.map((plan, idx) => (
+              <div key={idx} className="flex-shrink-0 w-[380px]">
+                <PricingCard
+                  plan={plan}
+                  onClick={() => handleDaftar(plan.name, plan.price)}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
 
-
-                {/* Desktop View */}
-                <div className="hidden md:flex flex-col md:flex-row justify-center items-stretch gap-8">
-                    {data.pricing.map((plan, idx) => (
-                        <PricingCard key={idx} plan={plan} />
-                    ))}
-                </div>
-            </div>
+        {/* Desktop View */}
+        <div className="hidden md:flex flex-col md:flex-row justify-center items-stretch gap-8">
+          {data.pricing.map((plan, idx) => (
+            <PricingCard
+              key={idx}
+              plan={plan}
+              onClick={() => handleDaftar(plan.name, plan.price)}
+            />
+          ))}
+        </div>
+      </div>
 
         </section>
     );

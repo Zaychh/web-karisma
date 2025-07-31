@@ -1,4 +1,3 @@
-import React from 'react';
 import emptyAchieve from '../../assets/pool.png';
 import rightChar from '../../assets/skate.png';
 

@@ -1,31 +1,62 @@
-import instagramIcon from '../../assets/instagram.png';
-import linkedinIcon from '../../assets/linkedin.png';
-import whatsappIcon from '../../assets/whatsapp.png';
-
-import karismaLogo from '../../assets/logoka.png'; 
+import instagramIcon from "../../assets/instagram.png";
+import linkedinIcon from "../../assets/linkedin.png";
+import whatsappIcon from "../../assets/whatsapp.png";
+import karismaLogo from "../../assets/logoka.png";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function Footer() {
+  const { isLoggedIn } = useAuth();
+
   return (
     <footer className="w-full bg-onyx text-white py-6 px-4 md:px-12">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start justify-between gap-6 md:gap-12">
-        
         <div>
-             <img
-                src={karismaLogo}
-                alt="Karisma Academy Logo"
-                className="w-[180px] md:w-[220px] object-contain"
-                />
+          <img
+            src={karismaLogo}
+            alt="Karisma Academy Logo"
+            className="w-[180px] md:w-[220px] object-contain"
+          />
         </div>
 
         <div className="flex items-start gap-6">
           <div className="w-px h-full bg-white/60 hidden md:block" />
 
           <ul className="flex flex-col gap-1 text-sm font-medium font-poppins">
-            <li><a href="/Home" className="hover:text-primary transition">Home</a></li>
-            <li><a href="#" className="hover:text-primary transition">Blog</a></li>
-            <li><a href="/tentang-kami" className="hover:text-primary transition">About</a></li>
-            <li><a href="#" className="hover:text-primary transition">Bootcamp</a></li>
-            <li><a href="#" className="hover:text-primary transition">Free Class</a></li>
+            <li>
+              <a
+                href={isLoggedIn ? "/dashboard" : "/Home"} // ✅ Kondisi dinamis
+                className="hover:text-primary transition"
+              >
+                Home
+              </a>
+            </li>
+            {isLoggedIn && (
+              <li>
+                <a href="/inventori" className="hover:text-primary transition">
+                  Inventori
+                </a>
+              </li>
+            )}
+            <li>
+              <a href="/blog" className="hover:text-primary transition">
+                Blog
+              </a>
+            </li>
+            <li>
+              <a href="/tentang-kami" className="hover:text-primary transition">
+                About
+              </a>
+            </li>
+            <li>
+              <a href="/bootcamp" className="hover:text-primary transition">
+                Bootcamp
+              </a>
+            </li>
+            <li>
+              <a href="/free-class" className="hover:text-primary transition">
+                Free Class
+              </a>
+            </li>
           </ul>
         </div>
 
@@ -59,7 +90,7 @@ export default function Footer() {
             Karisma Academy Center
           </a>
         </div>
-        </div>
-        </footer>
+      </div>
+    </footer>
   );
 }

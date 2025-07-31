@@ -4,6 +4,7 @@ import mascot from '../../assets/mascot.png';
 import { login } from '../../services/auth';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode'; // install ini
+import { useAuth } from '../../contexts/AuthContext'; // ⬅️ Import context
 
 interface DecodedToken {
   username: string;
@@ -15,6 +16,7 @@ const Login: React.FC = () => {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const auth = useAuth(); // akses context
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +35,8 @@ const Login: React.FC = () => {
       const res = await login(identifier, password);
       const token = res.data.token;
 
-      localStorage.setItem('token', token);
+      // Simpan via context (bukan langsung localStorage)
+      auth.login(token);
 
       // Decode token untuk ambil role
       const decoded = jwtDecode<DecodedToken>(token);

@@ -39,7 +39,7 @@ import KalibrLogo from "../../assets/kalibr.png";
 const CourseCard = ({ course }: { course: Course }) => (
   <motion.div
     key={course.id}
-    className="bg-[#1D1D1D] rounded-2xl w-[90vw] sm:w-[320px] flex-shrink-0 overflow-hidden border border-gray-600 hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
+    className="bg-[#1D1D1D] rounded-2xl w-[90vw] sm:w-[320px] flex-shrink-0 overflow-hidden border border-kertas hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
     initial={{ opacity: 0, y: 30 }}
     animate={{ opacity: 1, y: 0 }}
     exit={{ opacity: 0, y: -30 }}
@@ -337,7 +337,7 @@ export const courses: Course[] = [
   },
   {
     id: 2,
-    slug: "fullstack-web-development",
+    slug: "full-stack-web-development",
     title: "Bootcamp Full-Stack Web Development",
     title2: "Full-Stack Web Developer",
     careerTitle: "Web Programming",

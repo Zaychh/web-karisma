@@ -8,7 +8,12 @@ interface PricingPlan {
   benefits?: string[];
 }
 
-export default function PricingCard({ plan }: { plan: PricingPlan }) {
+interface PricingCardProps {
+  plan: PricingPlan;
+  onClick?: () => void;
+}
+
+export default function PricingCard({ plan, onClick }: PricingCardProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const formattedPrice = new Intl.NumberFormat("id-ID", {
@@ -19,10 +24,10 @@ export default function PricingCard({ plan }: { plan: PricingPlan }) {
 
   const formattedOriginal = plan.originalPrice
     ? new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      minimumFractionDigits: 0,
-    }).format(plan.originalPrice)
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      }).format(plan.originalPrice)
     : null;
 
   return (
@@ -41,7 +46,8 @@ export default function PricingCard({ plan }: { plan: PricingPlan }) {
                 </span>
                 <span className="text-red-500 text-xs bg-white px-2 py-0.5 rounded-md font-bold">
                   {Math.round(
-                    ((plan.originalPrice - plan.price) / plan.originalPrice) * 100
+                    ((plan.originalPrice - plan.price) / plan.originalPrice) *
+                      100
                   )}
                   %
                 </span>
@@ -53,7 +59,10 @@ export default function PricingCard({ plan }: { plan: PricingPlan }) {
 
         {/* Button */}
         <div className="mb-6">
-          <button className="bg-white text-black text-xl w-full py-3 rounded-xl font-semibold hover:bg-gray-200 transition cursor-pointer">
+          <button
+            onClick={onClick}
+            className="bg-white text-black text-xl w-full py-3 rounded-xl font-semibold hover:bg-gray-200 transition cursor-pointer"
+          >
             Daftar Sekarang!
           </button>
         </div>
@@ -62,10 +71,10 @@ export default function PricingCard({ plan }: { plan: PricingPlan }) {
         <div>
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="flex justify-between items-center w-full text-sm text-gray-300 cursor-pointer" 
+            className="flex justify-between items-center w-full text-sm text-gray-300 cursor-pointer"
           >
             Benefit
-            <span className="cursor-pointer"> 
+            <span className="cursor-pointer">
               {isOpen ? <FaChevronUp /> : <FaChevronDown />}
             </span>
           </button>
@@ -73,18 +82,14 @@ export default function PricingCard({ plan }: { plan: PricingPlan }) {
           {isOpen && (
             <ul className="mt-3 pl-4 text-lg space-y-2 min-h-[24px]">
               {plan.benefits?.map((item, idx) => (
-                <li
-                  key={idx}
-                  className="text-white relative pl-4"
-                >
-                  <span className="absolute left-0 top-1.5 w-2 h-2 bg-green-400 rounded-full" /> 
+                <li key={idx} className="text-white relative pl-4">
+                  <span className="absolute left-0 top-1.5 w-2 h-2 bg-green-400 rounded-full" />
                   {item}
                 </li>
               ))}
             </ul>
           )}
         </div>
-
       </div>
     </div>
   );

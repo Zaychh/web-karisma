@@ -1,4 +1,3 @@
-import Header from "./Header";
 import Hero from "./Hero";
 import Info from "./Information";
 import Eksplor from "./Explor";
@@ -14,7 +13,6 @@ import Footer from "./Footer";
 function App() {
   return (
     <>
-      <Header />
       <Hero />
       <Info />
       <Eksplor />

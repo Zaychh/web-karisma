@@ -178,12 +178,14 @@ export default function Section5() {
                 >
                   Kirim Email
                 </button>
-                <button
-                  type="button"
+                <a
+                  href="https://api.whatsapp.com/send/?phone=628113631515&text&type=phone_number&app_absent=0"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="border border-white text-white font-semibold px-14 py-3 rounded-full cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg"
                 >
                   Kontak Whatsapp
-                </button>
+                </a>
               </div>
             </form>
           </div>

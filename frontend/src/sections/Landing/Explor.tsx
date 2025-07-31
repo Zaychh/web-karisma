@@ -1,6 +1,9 @@
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+
+import HeroSec from "../Free-Class/section3";
 
 import graph from "../../assets/graphdes.png";
 import back from "../../assets/backend.png";
@@ -13,6 +16,7 @@ import game from "../../assets/UnityGameDev.png";
 
 interface Course {
   id: number;
+  slug: string;
   title: string;
   duration: string;
   image: string;
@@ -23,6 +27,7 @@ const courses: Course[] = [
   // Slide 1
   {
     id: 1,
+    slug: "graphic-design-branding",
     title: "Bootcamp Graphic Design & Branding",
     duration: "3 atau 6 bulan",
     image: graph,
@@ -34,6 +39,7 @@ const courses: Course[] = [
   },
   {
     id: 2,
+    slug: "full-stack-web-development",
     title: "Bootcamp Full-Stack Web Development",
     duration: "3 atau 6 bulan",
     image: full,
@@ -46,6 +52,7 @@ const courses: Course[] = [
   },
   {
     id: 3,
+    slug: "back-end-development-golang",
     title: "Bootcamp Back-End Development: Golang",
     duration: "3 atau 6 bulan",
     image: back,
@@ -59,6 +66,7 @@ const courses: Course[] = [
   // Slide 2
   {
     id: 4,
+    slug: "ui-ux-product-design",
     title: "Bootcamp UI/UX & Product Design",
     duration: "3 atau 6 bulan",
     image: mock,
@@ -71,6 +79,7 @@ const courses: Course[] = [
   },
   {
     id: 5,
+    slug: "data-science-machine-learning",
     title: "Bootcamp Data Science & Machine Learning",
     duration: "3 atau 6 bulan",
     image: ml,
@@ -83,6 +92,7 @@ const courses: Course[] = [
   },
   {
     id: 6,
+    slug: "mobile-development-flutter",
     title: "Bootcamp Mobile Development (Flutter)",
     duration: "3 atau 6 bulan",
     image: mobile,
@@ -96,6 +106,7 @@ const courses: Course[] = [
   // Slide 3
   {
     id: 7,
+    slug: "cybersecurity-fundamentals",
     title: "Bootcamp Cybersecurity Fundamentals",
     duration: "3 atau 6 bulan",
     image: cyber,
@@ -108,6 +119,7 @@ const courses: Course[] = [
   },
   {
     id: 8,
+    slug: "cloud-engineering-aws-gcp",
     title: "Bootcamp Cloud Engineer (AWS/GCP)",
     duration: "3 atau 6 bulan",
     image: back,
@@ -120,6 +132,7 @@ const courses: Course[] = [
   },
   {
     id: 9,
+    slug: "game-development-unity",
     title: "Bootcamp Game Development Unity",
     duration: "3 atau 6 bulan",
     image: game,
@@ -162,17 +175,21 @@ const CourseCard = ({ course }: { course: Course }) => (
           </li>
         ))}
       </ul>
-      <div className="mt-auto">
-        <button className="py-2 w-full rounded-lg border border-gray-500 hover:border-bluberi hover:bg-bluberi hover:text-putih transition-all font-semibold">
+      <Link to={`/bootcamp/${course.slug}`} className="mt-auto">
+        <button className="py-2 w-full rounded-lg border border-gray-500 hover:border-bluberi hover:bg-bluberi hover:text-putih transition-all font-semibold cursor-pointer">
           Lebih Lanjut
         </button>
-      </div>
+      </Link>
     </div>
   </motion.div>
 );
 
 const BootcampLanding = () => {
   const [page, setPage] = useState(0);
+  const [activeTab, setActiveTab] = useState<"bootcamp" | "freeclass">(
+    "bootcamp"
+  ); // <=== Tambahan: State kontrol tampilan
+
   const pageSize = 3;
   const totalPages = Math.ceil(courses.length / pageSize);
 
@@ -190,76 +207,98 @@ const BootcampLanding = () => {
           <span className="relative text-rosegold hover:text-transparent hover:bg-gradient-to-l hover:from-[#fff8dc] hover:via-[#FFD700] hover:to-[#b8860b] hover:bg-[length:200%_100%] hover:bg-clip-text hover:animate-shiny transition-all duration-300 ease-linear">
             Kebutuhan Kamu
           </span>
-
         </h1>
         <p className="text-gray-300 text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
           Level up hardskill, softskill, dan portfolio kamu disini. Dapatkan
           juga bimbingan karir terlengkap untuk mendukungmu menjadi talenta siap
           kerja di dunia digital
         </p>
+
+        {/* === TOMBOL SWITCH === */}
         <div className="mt-6 flex flex-col md:flex-row items-center justify-center gap-4">
-          <button className="bg-bluberi hover:bg-rosegold hover:text-onyx text-kertas px-12 py-2 rounded-lg text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg">
+          <button
+            onClick={() => setActiveTab("bootcamp")}
+            className={`px-12 py-2 rounded-lg text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer ${
+              activeTab === "bootcamp"
+                ? "bg-bluberi text-kertas"
+                : "border-2 border-kertas text-kertas hover:bg-kertas hover:text-onyx"
+            }`}
+          >
             Bootcamp Course
           </button>
-          <button className="border-2 border-kertas text-kertas px-12 py-2 rounded-lg text-lg font-semibold transition-all duration-300 hover:bg-kertas hover:text-onyx hover:scale-105">
+          <button
+            onClick={() => setActiveTab("freeclass")}
+            className={`px-12 py-2 rounded-lg text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer ${
+              activeTab === "freeclass"
+                ? "bg-bluberi text-kertas"
+                : "border-2 border-kertas text-kertas hover:bg-kertas hover:text-onyx"
+            }`}
+          >
             Free Class
           </button>
         </div>
       </div>
 
-      <div className="text-left max-w-screen-xl mx-auto px-4 mb-8">
-        <h2 className="text-2xl font-bold font-mont mb-2 leading-tight">
-          Bootcamp Course
-        </h2>
-        <p className="text-lg font-poppins text-gray-400 max-w-3xl leading-relaxed">
-          Belajar intensif buat persiapan karir dan pelajari skill baru
-        </p>
-      </div>
+      {/* === SWITCH TAMPILAN BERDASARKAN STATE === */}
+      {activeTab === "bootcamp" ? (
+        <>
+          <div className="text-left max-w-screen-xl mx-auto px-4 mb-8">
+            <h2 className="text-2xl font-bold font-mont mb-2 leading-tight">
+              Bootcamp Course
+            </h2>
+            <p className="text-lg font-poppins text-gray-400 max-w-3xl leading-relaxed">
+              Belajar intensif buat persiapan karir dan pelajari skill baru
+            </p>
+          </div>
 
-      <div className="relative flex flex-col items-center">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={handlePrev}
-            className="p-2 text-gray-300 hover:text-white transition-all"
-          >
-            <ChevronLeft size={28} />
-          </button>
+          <div className="relative flex flex-col items-center">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={handlePrev}
+                className="p-2 text-gray-300 hover:text-white transition-all cursor-pointer"
+              >
+                <ChevronLeft size={28} />
+              </button>
 
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={page}
-              className="flex gap-6"
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -40 }}
-              transition={{ duration: 0.5, ease: "easeIn" }}
-            >
-              {currentCourses.map((course) => (
-                <CourseCard key={course.id} course={course} />
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={page}
+                  className="flex gap-6"
+                  initial={{ opacity: 0, y: 40 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -40 }}
+                  transition={{ duration: 0.5, ease: "easeIn" }}
+                >
+                  {currentCourses.map((course) => (
+                    <CourseCard key={course.id} course={course} />
+                  ))}
+                </motion.div>
+              </AnimatePresence>
+
+              <button
+                onClick={handleNext}
+                className="p-2 text-gray-300 hover:text-white transition-all cursor-pointer"
+              >
+                <ChevronRight size={28} />
+              </button>
+            </div>
+
+            <div className="flex justify-center mt-8 space-x-2">
+              {Array.from({ length: totalPages }).map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setPage(i)}
+                  className={`w-3 h-3 rounded-full ${
+                    page === i ? "bg-bluberi" : "bg-kertas"
+                  } transition-all`}
+                />
               ))}
-            </motion.div>
-          </AnimatePresence>
-
-          <button
-            onClick={handleNext}
-            className="p-2 text-gray-300 hover:text-white transition-all"
-          >
-            <ChevronRight size={28} />
-          </button>
-        </div>
-
-        <div className="flex justify-center mt-8 space-x-2">
-          {Array.from({ length: totalPages }).map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setPage(i)}
-              className={`w-3 h-3 rounded-full ${
-                page === i ? "bg-bluberi" : "bg-kertas"
-              } transition-all`}
-            />
-          ))}
-        </div>
-      </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        <HeroSec isLanding /> // Komponen Free Class ditampilkan saat activeTab = "freeclass"
+      )}
     </div>
   );
 };

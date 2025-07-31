@@ -2,21 +2,25 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
-const { createPool } = require('./database'); // Sekarang bisa destructure
+const { createPool } = require('./database');
 const authRoutes = require('./routes/auth');
-const instructorRoutes = require('./routes/instructor')
-const programRoutes = require('./routes/program')
+const instructorRoutes = require('./routes/instructor');
+const programRoutes = require('./routes/program');
+const userRoutes = require('./routes/user'); // ✅ Ini tetap
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ✅ Middleware HARUS sebelum routes
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Routes
+// ✅ Routes setelah middleware
 app.use('/api/auth', authRoutes);
 app.use('/api/instructors', instructorRoutes);
 app.use('/api/programs', programRoutes);
+app.use('/api/user', userRoutes);
 app.use('/uploads', express.static('uploads'));
 
 // Health check endpoint

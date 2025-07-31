@@ -1,13 +1,14 @@
-import React from "react";
 import Bocah from "../../assets/bocahbiru.png";
 import './HeroCourse.css';
-
+import { useAuth } from "../../contexts/AuthContext";
 export default function Hero() {
+    const { user } = useAuth();
+
     return (
         <section className="w-full bg-ashh text-white py-12 px-4 md:px-12 min-h-screen">
             <div className="mb-10">
                 <h1 className="text-xl font-bold">
-                    Hy, <span className="text-white">Ario Karbit!</span>
+                    Hy, <span className="text-white">{user?.name || "User"}</span>
                 </h1>
                 <p className="text-base mt-1">
                     Jangan Lupa Untuk Mengikuti Kursus Yang Sudah Dibeli, Ya!

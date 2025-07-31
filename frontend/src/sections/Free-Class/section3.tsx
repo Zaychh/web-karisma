@@ -10,11 +10,25 @@ import full from "../../assets/fullstack.png";
 import mock from "../../assets/Mock.png";
 import ml from "../../assets/Datascience.png";
 
+import chico from "../../assets/chico.png";
+import Kim from "../../assets/Kim.png";
+import Dianaa from "../../assets/Dianaa.png";
+import t3 from "../../assets/t3.png";
+import t2 from "../../assets/t2.png";
+
 // FreeClassCard Component
-const FreeClassCard = ({ freeClass }: { freeClass: FreeClass }) => (
+const FreeClassCard = ({
+  freeClass,
+  isLanding = false,
+}: {
+  freeClass: FreeClass;
+  isLanding?: boolean;
+}) => (
   <motion.div
     key={freeClass.id}
-    className="bg-ashh rounded-2xl w-[90vw] sm:w-[320px] flex-shrink-0 overflow-hidden border border-gray-600 hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
+    className={`${
+      isLanding ? "bg-onyx border-kertas" : "bg-ashh border-gray-600"
+    } rounded-2xl w-[90vw] sm:w-[320px] flex-shrink-0 overflow-hidden hover:shadow-xl hover:scale-[1.02] transition-all duration-300 border`}
     initial={{ opacity: 0, y: 30 }}
     animate={{ opacity: 1, y: 0 }}
     exit={{ opacity: 0, y: -30 }}
@@ -49,8 +63,12 @@ const FreeClassCard = ({ freeClass }: { freeClass: FreeClass }) => (
   </motion.div>
 );
 
+interface HeroSecProps {
+  isLanding?: boolean;
+}
+
 // HeroSec Component
-const HeroSec = () => {
+const HeroSec = ({ isLanding = false }: HeroSecProps) => {
   const [page, setPage] = useState(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
@@ -81,20 +99,43 @@ const HeroSec = () => {
   const currentClasses = freeClasses.slice(page * pageSize, (page + 1) * pageSize);
 
   return (
-    <section className="bg-ashh text-white py-20 px-6 md:px-16">
-      <div className="text-center mb-12 max-w-3xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">
-          Berbagai Kelas Gratis yang Hadir buat Kamu
-        </h2>
-        <p className="text-gray-300 text-base md:text-2xl">
-          Biar kamu tau mana bidang yang cocok buat kamu
-        </p>
-      </div>
+    <section
+      className={`${
+        isLanding ? "bg-onyx" : "bg-ashh"
+      } text-white py-20 px-6 md:px-16`}
+    >
+      <div
+  className={`${
+    isLanding
+      ? "text-left max-w-screen-xl px-4 mb-8 mx-auto"
+      : "text-center mb-12 max-w-3xl mx-auto"
+  }`}
+>
+  <h2
+    className={`font-bold mb-2 leading-tight ${
+      isLanding ? "text-2xl" : "text-3xl md:text-4xl"
+    }`}
+  >
+    {isLanding ? "Free Class" : "Berbagai Kelas Gratis yang Hadir buat Kamu"}
+  </h2>
+  <p
+    className={`text-gray-400 leading-relaxed ${
+      isLanding ? "text-lg max-w-3xl font-poppins" : "text-base md:text-2xl"
+    }`}
+  >
+    {isLanding
+      ? "Coba gratis berbagai bidang dan temukan minat karirmu!"
+      : "Biar kamu tau mana bidang yang cocok buat kamu"}
+  </p>
+</div>
 
       <div className="relative flex flex-col items-center">
         {/* Cards + Navigation */}
         <div className="flex items-center gap-4">
-          <button onClick={handlePrev} className="p-2 text-gray-300 hover:text-white cursor-pointer">
+          <button
+            onClick={handlePrev}
+            className="p-2 text-gray-300 hover:text-white cursor-pointer"
+          >
             <ChevronLeft size={28} />
           </button>
 
@@ -108,12 +149,15 @@ const HeroSec = () => {
               transition={{ duration: 0.5 }}
             >
               {currentClasses.map((freeClass) => (
-                <FreeClassCard key={freeClass.id} freeClass={freeClass} />
+                <FreeClassCard key={freeClass.id} freeClass={freeClass} isLanding={isLanding} />
               ))}
             </motion.div>
           </AnimatePresence>
 
-          <button onClick={handleNext} className="p-2 text-gray-300 hover:text-white cursor-pointer">
+          <button
+            onClick={handleNext}
+            className="p-2 text-gray-300 hover:text-white cursor-pointer"
+          >
             <ChevronRight size={28} />
           </button>
         </div>
@@ -128,7 +172,9 @@ const HeroSec = () => {
               >
                 &lt;
               </button>
-              <span className="text-lg font-semibold text-white">{page + 1}</span>
+              <span className="text-lg font-semibold text-white">
+                {page + 1}
+              </span>
               <button
                 onClick={handleNext}
                 className="text-lg px-2 py-1 text-gray-300 hover:text-white cursor-pointer"
@@ -163,7 +209,28 @@ export interface FreeClass {
   title2: string;
   image: string;
   skills: string[];
+  instructor: {
+    name: string;
+    role: string;
+    image: string;
+    linkedin: string;
+  };
+    pricing: {
+    name: string;
+    price: string | number;
+    originalPrice?: number;
+    benefits?: string[];
+  }[];
 }
+
+const FreePackBennefits = [
+  "Ikut Seluruh Sesi Live Class",
+  "Akses Community Event Unlimited",
+  "Live Practice for Update Your Portfolio",
+  "Sertifikat Accomplishment",
+  "Materi All Class",
+  "Bonus 3 Recording Class",
+];
 
 export const freeClasses: FreeClass[] = [
   {
@@ -177,6 +244,20 @@ export const freeClasses: FreeClass[] = [
       "Cara bikin feed IG yang konsisten pakai Canva/Figma",
       "Tips visual marketing ala brand besar",
     ],
+    instructor: {
+      name: "Chico Lachowski",
+      role: "Graphic Designer",
+      image: chico,
+      linkedin: "https://www.linkedin.com/in/chicolachowski/",
+    },
+    pricing: [
+      {
+        name: "Free Pack",
+        price: "Gratis!",
+        originalPrice: 200000,
+        benefits: FreePackBennefits,
+      },
+    ],
   },
   {
     id: 2,
@@ -188,6 +269,20 @@ export const freeClasses: FreeClass[] = [
       "Cara bikin landing page sederhana",
       "Belajar pakai VSCode & live preview",
       "Dasar HTML + styling CSS",
+    ],
+    instructor: {
+      name: "Diana Cesare",
+      role: "Web Developer",
+      image: Dianaa,
+      linkedin: "https://www.linkedin.com/in/dianacesare/",
+    },
+    pricing: [
+      {
+        name: "Free Pack",
+        price: "Gratis!",
+        originalPrice: 200000,
+        benefits: FreePackBennefits,
+      },
     ],
   },
   {
@@ -201,6 +296,20 @@ export const freeClasses: FreeClass[] = [
       "Build & run container sederhana",
       "Simulasi deploy mini-app",
     ],
+    instructor: {
+      name: "Kim Jaegyun",
+      role: "DevOps Engineer",
+      image: Kim,
+      linkedin: "https://www.linkedin.com/in/kimjaegyun/",
+    },
+    pricing: [
+      {
+        name: "Free Pack",
+        price: "Gratis!",
+        originalPrice: 200000,
+        benefits: FreePackBennefits,
+      },
+    ],
   },
   {
     id: 4,
@@ -213,6 +322,20 @@ export const freeClasses: FreeClass[] = [
       "Struktur web portfolio",
       "Tambahkan badge sertifikat & showcase proyek",
     ],
+    instructor: {
+      name: "Siegfried Koigner",
+      role: "Web Developer",
+      image: t3,
+      linkedin: "https://www.linkedin.com/in/siegfried-koigner/",
+    },
+    pricing: [
+      {
+        name: "Free Pack",
+        price: "Gratis!",
+        originalPrice: 200000,
+        benefits: FreePackBennefits,
+      },
+    ],
   },
   {
     id: 5,
@@ -224,6 +347,20 @@ export const freeClasses: FreeClass[] = [
       "Optimasi profil LinkedIn",
       "Tulis postingan yang dilirik HRD",
       "Tips koneksi & cari mentor",
+    ],
+    instructor: {
+      name: "Chisa Yoshida",
+      role: "Career Coach",
+      image: t2,
+      linkedin: "https://www.linkedin.com/in/chisa-yoshida/",
+    },
+    pricing: [
+      {
+        name: "Free Pack",
+        price: "Gratis!",
+        originalPrice: 200000,
+        benefits: FreePackBennefits,
+      },
     ],
   },
 ];

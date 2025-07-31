@@ -8,7 +8,7 @@ const DetailSection2 = () => {
     if (!course) return null;
 
     return (
-        <section className="bg-irreng text-white py-16 px-6 md:px-16 font-poppins">
+        <section className="bg-abyssal text-white py-16 px-6 md:px-16 font-poppins">
             <h2 className="text-2xl md:text-3xl font-bold text-center mb-10">
                 5 Fakta Menarik Tentang Karir <br className="block md:hidden" />
                 <span className="text-rosegold">{course.title2}</span>

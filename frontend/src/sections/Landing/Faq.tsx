@@ -86,7 +86,7 @@ export default function FAQSection() {
             <div key={idx} className="border-b border-ashh pb-4">
               <button
                 onClick={() => toggle(idx)}
-                className="w-full flex justify-between items-center text-left text-white font-medium focus:outline-none"
+                className="w-full flex justify-between items-center text-left text-white font-medium focus:outline-none cursor-pointer"
               >
                 <span>{faq.question}</span>
                 <motion.div
