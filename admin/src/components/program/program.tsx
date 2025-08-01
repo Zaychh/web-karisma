@@ -1,10 +1,10 @@
 import SidebarOnly from "../../SidebarOnly";
-import Boot from "./bootpage";
+import Program from "./propage";
 
-export default function Bootcamp () {
+export default function ProgramPage() {
     return (
         <SidebarOnly>
-            <Boot />
+            <Program />
         </SidebarOnly>
     );
 }

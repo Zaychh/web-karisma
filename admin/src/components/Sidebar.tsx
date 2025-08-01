@@ -1,4 +1,4 @@
-import { Home, LayoutGrid, Users, ChartLine, LogOut, Wallet, IdCard } from "lucide-react";
+import { Home, LayoutGrid, Users, UserCog, PencilRuler, LogOut, Wallet, Award } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../assets/logoka.png";
 
@@ -7,11 +7,12 @@ const Sidebar = () => {
 
   const navItems = [
     { label: "Dashboard", icon: <Home size={20} />, to: "/dashboard" },
-    { label: "Courses", icon: <LayoutGrid size={20} />, to: "/bootcamp" },
-    { label: "Instructors", icon: <Users size={20} />, to: "/instructors" },
-    { label: "Sertificate", icon: <IdCard size={20} />, to: "/sertifikat" },
+    { label: "Courses", icon: <LayoutGrid size={20} />, to: "/program" },
+    { label: "Instructors", icon: <UserCog size={20} />, to: "/instructors" },
+    { label: "User List", icon: <Users size={20} />, to: "/users" },
+    { label: "Achievement List", icon: <Award size={20} />, to: "/achievement" },
     { label: "Transaction", icon: <Wallet size={20} />, to: "/transaction" },
-    { label: "Stats & Reports", icon: <ChartLine size={20} />, to: "/stats" },
+    { label: "Tools List", icon: <PencilRuler size={20} />, to: "/tools" },
   ];
 
   return (

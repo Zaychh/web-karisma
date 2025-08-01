@@ -16,7 +16,7 @@ export default function InstructorManagement() {
     if (!confirm("Are you sure you want to delete this instructor account?"))
       return;
     try {
-      await fetch(`${import.meta.env.VITE_API_URL}/api/instructors/${id}`, {
+      await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/instructors/${id}`, {
         method: "DELETE",
       });
       setInstructors((prev) => prev.filter((ins) => ins.instructor_id !== id));
@@ -29,7 +29,7 @@ export default function InstructorManagement() {
     const fetchInstructors = async () => {
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/instructors`
+          `${import.meta.env.VITE_API_BASE_URL}/api/instructors`
         );
         const data = await res.json();
         if (Array.isArray(data)) {
@@ -94,14 +94,14 @@ export default function InstructorManagement() {
                     >
                       <td className="p-4 flex items-center gap-3">
                         <img
-                          src={`${import.meta.env.VITE_API_URL}/uploads/${
+                          src={`${import.meta.env.VITE_API_BASE_URL}/uploads/${
                             i.image
                           }`}
                           alt={i.name}
                           className="w-10 h-10 rounded-full object-cover"
                           onClick={() =>
                             setPreviewImage(
-                              `${import.meta.env.VITE_API_URL}/uploads/${
+                              `${import.meta.env.VITE_API_BASE_URL}/uploads/${
                                 i.image
                               }`
                             )

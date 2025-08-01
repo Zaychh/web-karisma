@@ -1,16 +1,16 @@
 #!/bin/bash
 
 case "$1" in
-  up)
+  start)
     echo "🔼 Starting containers..."
-    docker-compose up -d --build
+    docker-compose up -d 
     ;;
-  down)
+  stop)
     echo "🔽 Stopping containers..."
     docker-compose down
     ;;
   restart)
-    echo "♻️ Restarting containers..."
+    echo "♻️ Restarting Battle System, Master. Please wait..."
     docker-compose down
     docker-compose up -d --build
     ;;
@@ -23,6 +23,6 @@ case "$1" in
     ;;
   *)
     echo "❓ Unknown command: $1"
-    echo "Usage: ./docker.sh [up|down|restart|logs|ps]"
+    echo "Usage: ./docker.sh [start|stop|restart|logs|ps]"
     ;;
 esac

@@ -11,8 +11,8 @@ const [mastery, setMastery] = useState<string[]>([]);
 useEffect(() => {
   const fetchMastery = async () => {
     try {
-      console.log('VITE_API_URL:', import.meta.env.VITE_API_URL);
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/instructors/mastery`);
+      console.log('VITE_API_BASE_URL:', import.meta.env.VITE_API_BASE_URL);
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/instructors/mastery`);
       const data = await res.json();
       console.log('[DEBUG] mastery:', data);
       setMastery(data);
@@ -63,7 +63,7 @@ useEffect(() => {
     formData.append('image', image);
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/instructors`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/instructors`, {
         method: 'POST',
         body: formData,
       });

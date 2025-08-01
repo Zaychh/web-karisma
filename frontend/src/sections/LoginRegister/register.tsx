@@ -38,12 +38,11 @@ export default function Register() {
     setErrorMessage('');
 
     try {
-      await register({
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        role: 'user', 
-      });
+      await register(
+        formData.name,
+        formData.email,
+        formData.password
+      );
 
       console.log('Form Submitted:', formData);
       setSubmitStatus('success');
