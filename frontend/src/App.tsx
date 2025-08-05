@@ -9,6 +9,7 @@ import Landing from "./sections/Landing/Landing";
 import About from "./sections/Tentang/page";
 import Login from "./sections/LoginRegister/Login"
 import Dashboard from "./sections/Dashboard/pages";
+import Inventory from "./sections/Dashboard/Inventory/pages";
 import Register from "./sections/LoginRegister/register";
 import Bootcamp from "./sections/Bootcamp/page";
 import BootcampDetail from "./sections/Bootcamp/BootcampDetail";

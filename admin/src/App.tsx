@@ -1,6 +1,4 @@
-import { useState } from 'react'
-import { Navigate } from 'react-router-dom';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Dashboard from './Dashboard';
 import InstructorManagement from './components/instructor/instructor';
 import AddInstructorForm from './components/instructor/form';
@@ -32,7 +30,7 @@ export default function App() {
   return (
     <Router>
       <Routes>
-         <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/instructors" element={<InstructorManagement />} />
         <Route path="/instructors/add" element={<AddInstructorForm />} />

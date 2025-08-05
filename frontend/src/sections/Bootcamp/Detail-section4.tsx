@@ -110,7 +110,7 @@ export default function DetailSection4({ data }: { data: Course }) {
                 </div>
             </div>
 
-                  {/* Pricing Section */}
+            {/* Pricing Section */}
       <div className="mt-20">
         <h3 className="text-center text-2xl md:text-3xl font-bold mb-10">
           Investasi Terbaik dan Bersahabat buat Kamu
