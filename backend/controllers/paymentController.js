@@ -3,9 +3,9 @@ const midtransClient = require('midtrans-client');
 
 // Inisialisasi Midtrans
 const snap = new midtransClient.Snap({
-    isProduction: process.env.MIDTRANS_IS_PRODUCTION === 'false',
-    serverKey: process.env.MIDTRANS_SERVER_KEY,
-    clientKey: process.env.MIDTRANS_CLIENT_KEY
+    // isProduction: process.env.MIDTRANS_IS_PRODUCTION === 'false',
+    // serverKey: process.env.MIDTRANS_SERVER_KEY,
+    // clientKey: process.env.MIDTRANS_CLIENT_KEY
 });
 
 // Fungsi untuk create payment
