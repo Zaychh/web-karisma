@@ -57,12 +57,20 @@ const testimonials = [
 export default function DetailSection4({ data }: { data: Course }) {
     const navigate = useNavigate();
 
-      const handleDaftar = (planName: string, price: number) => {
+      const handleDaftar = (paymentData: {
+        title: string;
+        price: number;
+        program_id: number;
+        slug: string;
+      }) => {
+        console.log("handleDaftar dipanggil", paymentData);
+
         navigate("/pembayaran", {
           state: {
-            title: `${data.title} - ${planName}`,
-            price,
-            slug: data.slug, 
+            title: paymentData.title,
+            price: paymentData.price,
+            slug: paymentData.slug,
+            program_id: paymentData.program_id,
           },
         });
       };
@@ -114,8 +122,11 @@ export default function DetailSection4({ data }: { data: Course }) {
             {data.pricing.map((plan, idx) => (
               <div key={idx} className="flex-shrink-0 w-[380px]">
                 <PricingCard
-                  plan={plan}
-                  onClick={() => handleDaftar(plan.name, plan.price)}
+                  plan={{...plan,
+                    program_id: data.program_id,
+                    slug: data.slug,
+                  }}
+                  onClick={handleDaftar}
                 />
               </div>
             ))}
@@ -127,8 +138,11 @@ export default function DetailSection4({ data }: { data: Course }) {
           {data.pricing.map((plan, idx) => (
             <PricingCard
               key={idx}
-              plan={plan}
-              onClick={() => handleDaftar(plan.name, plan.price)}
+              plan={{...plan,
+                program_id: data.program_id,
+                slug: data.slug,
+              }}
+              onClick={handleDaftar}
             />
           ))}
         </div>

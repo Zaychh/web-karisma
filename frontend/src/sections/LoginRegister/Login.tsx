@@ -3,8 +3,8 @@ import { FaUser, FaLock } from 'react-icons/fa';
 import mascot from '../../assets/mascot.png';
 import { login } from '../../services/auth';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode'; // install ini
-import { useAuth } from '../../contexts/AuthContext'; // ⬅️ Import context
+import { jwtDecode } from 'jwt-decode';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface DecodedToken {
   user_id: number;
@@ -21,7 +21,7 @@ const Login: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const auth = useAuth(); // akses context
+  const auth = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,31 +43,27 @@ const Login: React.FC = () => {
     try {
       const response = await login(identifier, password);
 
-        if (response.data.success) {
+      if (response.data.success) {
         const token = response.data.token;
 
-      // Simpan via context (bukan langsung localStorage)
-      auth.login(token);
+        // ✅ PERBAIKAN: Gunakan auth context untuk login
+        await auth.login(token);
 
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
+        // Decode token untuk ambil role
+        const decoded = jwtDecode<DecodedToken>(token);
 
-
-      // Decode token untuk ambil role
-      const decoded = jwtDecode<DecodedToken>(token);
-
-      if (decoded.role === 'admin') {
-        window.location.href = 'http://localhost:5174/dashboard';
+        if (decoded.role === 'admin') {
+          window.location.href = 'http://localhost:5174/dashboard';
+        } else {
+          navigate('/dashboard');
+        }
       } else {
-        navigate('/dashboard');
+        setError(response.data.message || 'Login gagal!');
       }
-    } else {
-      setError(response.data.message || 'Login gagal!');
-    }
     } catch (err: any) {
       console.error('Login gagal:', err);
 
-     if (err.response?.data?.message) {
+      if (err.response?.data?.message) {
         setError(err.response.data.message);
       } else if (err.response?.status === 401) {
         setError('Email/Username atau password salah!');

@@ -11,7 +11,7 @@ const Sidebar = () => {
     { label: "Instructors", icon: <UserCog size={20} />, to: "/instructors" },
     { label: "User List", icon: <Users size={20} />, to: "/users" },
     { label: "Achievement List", icon: <Award size={20} />, to: "/achievement" },
-    { label: "Transaction", icon: <Wallet size={20} />, to: "/transaction" },
+    { label: "Transaction", icon: <Wallet size={20} />, to: "/transactions" },
     { label: "Tools List", icon: <PencilRuler size={20} />, to: "/tools" },
   ];
 

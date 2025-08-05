@@ -1,37 +1,67 @@
-import Bocah from "../../assets/bocahbiru.png";
-import './HeroCourse.css';
-import { useAuth } from "../../contexts/AuthContext";
-export default function Hero() {
-    const { user } = useAuth();
+import React from 'react';
+import { useAuth } from '../../contexts/AuthContext';
+import mascot from '../../assets/mascot.png';
+import { useNavigate } from 'react-router-dom';
 
-    return (
-        <section className="w-full bg-ashh text-white py-12 px-4 md:px-12 min-h-screen">
-            <div className="mb-10">
-                <h1 className="text-xl font-bold">
-                    Hy, <span className="text-white">{user?.name || "User"}</span>
-                </h1>
-                <p className="text-base mt-1">
-                    Jangan Lupa Untuk Mengikuti Kursus Yang Sudah Dibeli, Ya!
-                </p>
+const HeroCourse: React.FC = () => {
+  const { user, isLoading } = useAuth();
+  const navigate = useNavigate();
+
+  return (
+    <div className="min-h-screen bg-[#1c1c1c] text-white px-4 py-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header dengan greeting */}
+        <div className="mb-8">
+          {isLoading ? (
+            <div className="animate-pulse">
+              <div className="h-8 bg-gray-600 rounded w-48 mb-2"></div>
+              <div className="h-6 bg-gray-600 rounded w-96"></div>
             </div>
+          ) : (
+            <>
+              <h1 className="text-3xl font-bold mb-2">
+                Hy, {user?.name || 'User'}
+              </h1>
+              <p className="text-gray-300">
+                Jangan Lupa Untuk Mengikuti Kursus Yang Sudah Dibeli, Ya!
+              </p>
+            </>
+          )}
+        </div>
 
-            <h2 className="text-lg font-semibold mb-8">My Program</h2>
+        {/* My Program Section */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold mb-6">My Program</h2>
+          
+          {/* Empty State */}
+          <div className="flex flex-col items-center justify-center py-16">
+            <img src={mascot} alt="Mascot" className="w-32 h-32 mb-6" />
+            
+            <h3 className="text-xl font-bold mb-2 text-center">
+              TIDAK ADA PROGRAM YANG DITEMUKAN!
+            </h3>
+            
+            <p className="text-gray-400 text-center mb-4 max-w-md">
+              Cobalah untuk membeli kursus di kami untuk mendapatkan programmu sendiri!
+            </p>
+            
+            <p className="text-green-400 text-sm">
+              ERROR 404 - Program Not Found, Please Buy Course First
+            </p>
+          </div>
+        </div>
 
-            <div className="flex flex-col items-center justify-center mt-20 text-center">
-                <img src={Bocah} alt="Sorry" className="w-32 h-auto mb-6 animate-bounce" />
+        {/* Call to Action */}
+        <div className="text-center">
+          <button 
+          onClick={() => navigate('/bootcamp')}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+            Lihat Kursus Tersedia
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-                <h3 className=" glitch-text font-bold uppercase text-lg sm:text-xl md:text-2xl tracking-wide">
-                    TIDAK ADA PROGRAM YANG DITEMUKAN!
-                </h3>
-
-                <p className="text-sm text-gray-300 mt-2 max-w-md">
-                    Cobalah untuk membeli kursus di kami untuk mendapatkan programmu sendiri!
-                </p>
-
-                <p className="glitch-subtext mt-3 italic font-bold text-xs sm:text-sm">
-                     ERROR 404  -  Program Not Found, Please Buy Course First
-                </p>
-            </div>
-        </section>
-    )
-}
+export default HeroCourse;

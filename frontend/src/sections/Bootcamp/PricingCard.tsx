@@ -6,11 +6,19 @@ interface PricingPlan {
   price: number;
   originalPrice?: number;
   benefits?: string[];
+  // Tambahan data yang dibutuhkan untuk payment
+  program_id?: number;
+  slug?: string;
 }
 
 interface PricingCardProps {
   plan: PricingPlan;
-  onClick?: () => void;
+  onClick?: (paymentData: {
+    title: string;
+    price: number;
+    program_id: number;
+    slug: string;
+  }) => void;
 }
 
 export default function PricingCard({ plan, onClick }: PricingCardProps) {
@@ -29,6 +37,26 @@ export default function PricingCard({ plan, onClick }: PricingCardProps) {
         minimumFractionDigits: 0,
       }).format(plan.originalPrice)
     : null;
+
+  const handleDaftar = () => {
+    // Pastikan semua data yang dibutuhkan ada
+    if (!plan.program_id || !plan.slug) {
+      console.error('❌ Missing required data:', {
+        program_id: plan.program_id,
+        slug: plan.slug
+      });
+      alert('Data program tidak lengkap. Silakan refresh halaman.');
+      return;
+    }
+
+    // Kirim data lengkap ke parent
+    onClick?.({
+      title: plan.name,
+      price: plan.price,
+      program_id: plan.program_id,
+      slug: plan.slug
+    });
+  };
 
   return (
     <div className="bg-irreng text-white px-8 py-6 rounded-2xl border border-white w-[380px] flex flex-col h-full">
@@ -60,7 +88,7 @@ export default function PricingCard({ plan, onClick }: PricingCardProps) {
         {/* Button */}
         <div className="mb-6">
           <button
-            onClick={onClick}
+            onClick={handleDaftar}
             className="bg-white text-black text-xl w-full py-3 rounded-xl font-semibold hover:bg-gray-200 transition cursor-pointer"
           >
             Daftar Sekarang!

@@ -31,7 +31,7 @@ const [categories, setCategories] = useState<string[]>([]);
 
   useEffect(() => {
     api
-      .get("/api/programs/categories")
+      .get("/api/program/categories")
       .then((res) => {
         const result = res.data;
 
@@ -78,7 +78,7 @@ const [categories, setCategories] = useState<string[]>([]);
     debugFormData(data);
 
     try {
-      const response = await api.post("/api/programs", data);
+      const response = await api.post("/api/program", data);
 
       
       console.log("Response dari server:", response.data);
@@ -87,7 +87,7 @@ const [categories, setCategories] = useState<string[]>([]);
       alert("Program berhasil ditambahkan");
       
       // Redirect ke halaman daftar program
-      navigate("/bootcamp");
+      navigate("/program");
       
     } catch (err: any) {
       console.error("Error detail:", err);
@@ -121,7 +121,7 @@ const [categories, setCategories] = useState<string[]>([]);
 
   // Fungsi untuk membatalkan dan kembali
   const handleCancel = () => {
-    navigate(-1); // Kembali ke halaman sebelumnya
+    navigate('/program'); // Kembali ke halaman sebelumnya
     // atau navigate("/programs"); // Kembali ke halaman tertentu
   };
 

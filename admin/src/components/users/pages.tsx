@@ -145,17 +145,7 @@ export default function UserManagement() {
                           {user.role}
                         </span>
                       </td>
-                      <td className="space-x-3">
-                        <Button
-                          onClick={() =>
-                            navigate(`/users/edit/${user.user_id}`)
-                          }
-                          variant="secondary"
-                          className="bg-yellow-400 hover:bg-yellow-500 p-2"
-                          title="Edit user"
-                        >
-                          <FaEdit className="text-black" />
-                        </Button>
+                      <td className="space-x-3">                    
                         <Button
                           onClick={() => handleDelete(user.user_id)}
                           variant="destructive"

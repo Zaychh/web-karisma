@@ -39,7 +39,7 @@ const TambahSesi = () => {
 
   const handleSubmit = async () => {
     try {
-      await api.post(`/api/sesi/programs/${programId}/sesi`, { sessions });
+      await api.post(`/api/program/${programId}/sesi`, { sessions });
       alert("Semua sesi berhasil disimpan!");
       navigate(`/program/detail/${programId}`);
     } catch (err) {

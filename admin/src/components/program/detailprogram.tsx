@@ -14,27 +14,48 @@ interface ProgramDetail {
     majority: string;
     image: string;
   };
-  tools: { image: string }[];
+  tools: { image: string; name?: string }[]; // Diaktifkan kembali dengan optional name
+  achievements: {
+    // Tambahkan achievements
+    achievement_id: number;
+    name: string;
+    description: string;
+    image: string;
+  }[]; // Tambahkan achievements
 }
 
 const DetailProgram = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [program, setProgram] = useState<ProgramDetail | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+  const API_BASE_URL =
+    import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
   useEffect(() => {
     const fetchProgram = async () => {
       try {
-        const response = await api.get<ProgramDetail>(`/api/programs/${id}`);
+        setLoading(true);
+        setError(null);
+        const response = await api.get<ProgramDetail>(`/api/program/${id}`);
+        console.log("=== FRONTEND DEBUG ===");
+console.log("Full response:", response.data);
+console.log("Achievements:", response.data.achievements);
+console.log("Achievements length:", response.data.achievements?.length);
         setProgram(response.data);
       } catch (error) {
         console.error("Gagal mengambil detail program:", error);
+        setError("Gagal mengambil detail program");
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchProgram();
+    if (id) {
+      fetchProgram();
+    }
   }, [id]);
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -42,16 +63,35 @@ const DetailProgram = () => {
     e.currentTarget.src = "/default-placeholder.jpg"; // Optional fallback
   };
 
-  if (!program) return <p className="text-white">Loading...</p>;
+  if (loading)
+    return (
+      <div className="bg-onyx min-h-screen text-white flex items-center justify-center">
+        <p className="text-lg">Loading...</p>
+      </div>
+    );
+
+  if (error)
+    return (
+      <div className="bg-onyx min-h-screen text-white flex items-center justify-center">
+        <p className="text-lg text-red-400">{error}</p>
+      </div>
+    );
+
+  if (!program)
+    return (
+      <div className="bg-onyx min-h-screen text-white flex items-center justify-center">
+        <p className="text-lg">Program tidak ditemukan</p>
+      </div>
+    );
 
   return (
     <div className="bg-onyx min-h-screen text-white px-6 py-10 md:px-16">
       {/* Gambar Header */}
-      <div className="w-full max-w-5xl mx-auto rounded-xl overflow-hidden mb-10">
+      <div className="w-full max-w-3xl mx-auto rounded-xl overflow-hidden mb-10">
         <img
           src={`${API_BASE_URL}/uploads/cover/${program.image_cover}`}
           alt={program.title}
-          className="w-full h-auto object-cover"
+          className="w-full h-64 md:h-80 object-cover"
           onError={handleImageError}
         />
       </div>
@@ -91,34 +131,78 @@ const DetailProgram = () => {
         <div>
           <p className="text-lg font-bold mb-1">Total Sesi</p>
           <button
-          onClick={() => navigate(`/program/${id}/list-sesi`)}
-          className="border border-white px-4 py-3 rounded-md text-sm hover:bg-white hover:text-black transition" 
-          > List Total Sesi 
+            onClick={() => navigate(`/program/${id}/list-sesi`)}
+            className="border border-white px-4 py-3 rounded-md text-sm hover:bg-white hover:text-black transition"
+          >
+            List Total Sesi
           </button>
         </div>
       </div>
 
-      {/* Tools */}
+      {/* Tools Section - DIAKTIFKAN */}
       <div className="mb-10">
         <h3 className="text-lg font-bold mb-4">Tools</h3>
-        {program.tools.length > 0 ? (
-          <div className="flex flex-wrap items-center gap-4">
+
+        {program.tools && program.tools.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {program.tools.map((tool, index) => (
               <div
                 key={index}
-                className="w-16 h-16 md:w-20 md:h-20 bg-white rounded-md flex items-center justify-center p-2"
+                className="border border-white rounded-lg p-4 flex flex-col items-center"
               >
                 <img
-                  src={`${API_BASE_URL}/uploads/${tool.image}`}
-                  alt={`Tool ${index}`}
-                  className="max-h-full max-w-full object-contain"
+                  src={`${API_BASE_URL}/uploads/tools/${tool.image}`}
+                  alt={tool.name || `Tool ${index + 1}`}
+                  className="w-16 h-16 object-cover rounded-md mb-2"
                   onError={handleImageError}
                 />
+                {tool.name && (
+                  <p className="text-sm text-center text-gray-300">
+                    {tool.name}
+                  </p>
+                )}
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-gray-400">Belum ada tools</p>
+          <div className="border border-white rounded-lg p-6 text-center">
+            <p className="text-gray-400">Tidak ada tools untuk program ini</p>
+            <p className="text-xs text-gray-500 mt-2">
+              Expected tools but got: {JSON.stringify(program.tools)}
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Achievements Section */}
+      <div className="mb-10">
+        <h3 className="text-lg font-bold mb-4">Achievements</h3>
+
+        {program.achievements && program.achievements.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {program.achievements.map((achievement) => (
+              <div
+                key={achievement.achievement_id}
+                className="border border-white rounded-lg p-4 flex flex-col items-center"
+              >
+                <img
+                  src={`${API_BASE_URL}/uploads/achievements/${achievement.image}`}
+                  alt={achievement.name}
+                  className="w-16 h-16 object-contain rounded-md mb-2"
+                  onError={handleImageError}
+                />
+                <p className="text-sm text-center text-gray-300">
+                  {achievement.name}
+                </p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="border border-white rounded-lg p-6 text-center">
+            <p className="text-gray-400">
+              Tidak ada achievements untuk program ini
+            </p>
+          </div>
         )}
       </div>
 

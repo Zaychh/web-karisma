@@ -33,7 +33,22 @@ router.get("/:id", programController.getProgramById);
 router.put("/:id", upload.single("image_cover"), programController.updateProgram);
 router.delete("/:id", programController.deleteProgram);
 
+// === Route untuk Program-Tools ===
+router.get("/:id/tools", programController.getProgramTools);           
+router.post("/:id/tools", programController.addToolToProgram);         
+router.delete("/:id/tools/:toolId", programController.removeToolFromProgram); 
+
+// === Route untuk Program-Achievements (TAMBAHKAN INI SETELAH METHOD DITAMBAHKAN) ===
+// UNCOMMENT SETELAH METHOD DITAMBAHKAN KE CONTROLLER:
+router.get("/:id/achievements", programController.getProgramAchievements);           
+router.post("/:id/achievements", programController.addAchievementToProgram);         
+router.delete("/:id/achievements/:achievementId", programController.removeAchievementFromProgram); 
+
+// === Route untuk Sesi ===
 router.get("/:id/sesi", sesiController.getSesiByProgramId);
 router.post("/:id/sesi", sesiController.createMultipleSessions);
+router.get("/:programId/sesi/:sesiId", sesiController.getSesiById);
+router.put("/:programId/sesi/:sesiId", sesiController.updateSesi);
+router.delete("/:programId/sesi/:sesiId", sesiController.deleteSesi);
 
 module.exports = router;
