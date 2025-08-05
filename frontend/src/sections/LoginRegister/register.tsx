@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { User, Lock, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { User, Lock, Loader2, CheckCircle, AlertCircle, Mail } from 'lucide-react';
 import { register } from '../../services/auth';
+import axios from 'axios';
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -22,14 +23,39 @@ export default function Register() {
     }
   };
 
+  const validateForm = () => {
+    if (!formData.name.trim()) {
+      return 'Nama tidak boleh kosong';
+    }
+    if (formData.name.trim().length < 2) {
+      return 'Nama minimal 2 karakter';
+    }
+    if (!formData.email.trim()) {
+      return 'Email tidak boleh kosong';
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      return 'Format email tidak valid';
+    }
+    if (!formData.password) {
+      return 'Password tidak boleh kosong';
+    }
+    if (formData.password.length < 6) {
+      return 'Password minimal 6 karakter';
+    }
+    return null;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (isSubmitting || submitStatus === 'success') return;
 
-    if (!formData.name || !formData.email || !formData.password) {
+    // Validasi form
+    const validationError = validateForm();
+    if (validationError) {
       setSubmitStatus('error');
-      setErrorMessage('Semua field wajib diisi.');
+      setErrorMessage(validationError);
       return;
     }
 
@@ -38,23 +64,59 @@ export default function Register() {
     setErrorMessage('');
 
     try {
-      await register({
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        role: 'user', 
-      });
+      const response = await register(
+        formData.name.trim(),
+        formData.email.trim().toLowerCase(),
+        formData.password
+      );
 
-      console.log('Form Submitted:', formData);
+      console.log('✅ Registration successful:', response.data);
       setSubmitStatus('success');
 
+      // Reset form
+      setFormData({
+        name: '',
+        email: '',
+        password: '',
+      });
+
       setTimeout(() => {
-        window.location.href = '/Login';
+        window.location.href = '/login';
       }, 2000);
+      
     } catch (err: any) {
-      console.log('Register gagal!', err);
+      console.error('❌ Registration failed:', err);
       setSubmitStatus('error');
-      setErrorMessage(err.response?.data?.message || 'Registrasi gagal! Silakan coba lagi.');
+      
+      // Improved error handling
+      if (axios.isAxiosError(err)) {
+        if (err.response) {
+          // Server responded with error status
+          const status = err.response.status;
+          const message = err.response.data?.message || err.response.data?.error;
+          
+          switch (status) {
+            case 400:
+              setErrorMessage(message || 'Data yang dikirim tidak valid');
+              break;
+            case 409:
+              setErrorMessage('Email sudah terdaftar. Gunakan email lain.');
+              break;
+            case 500:
+              setErrorMessage('Terjadi kesalahan server. Silakan coba lagi nanti.');
+              break;
+            default:
+              setErrorMessage(message || `Error ${status}: Registrasi gagal`);
+          }
+        } else if (err.request) {
+          // Network error
+          setErrorMessage('Tidak dapat terhubung ke server. Periksa koneksi internet Anda.');
+        } else {
+          setErrorMessage('Terjadi kesalahan yang tidak diketahui.');
+        }
+      } else {
+        setErrorMessage('Registrasi gagal! Silakan coba lagi.');
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -91,48 +153,45 @@ export default function Register() {
           )}
 
           {submitStatus === 'error' && (
-            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md flex items-center">
-              <AlertCircle className="mr-2 w-5 h-5" />
-              <span>{errorMessage}</span>
+            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md flex items-start">
+              <AlertCircle className="mr-2 w-5 h-5 mt-0.5 flex-shrink-0" />
+              <span className="text-sm">{errorMessage}</span>
             </div>
           )}
 
           {/* Form Start */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
-              <div className="flex items-center border rounded-md px-3 py-2 bg-gray-100 focus-within:border-blue-500 focus-within:bg-white transition-colors">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Username <span className="text-red-500">*</span>
+              </label>
+              <div className="flex items-center border rounded-md px-3 py-2 bg-gray-50 focus-within:border-blue-500 focus-within:bg-white transition-colors">
                 <User className="text-gray-400 mr-2 w-5 h-5" />
                 <input
                   type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  placeholder="Username"
+                  placeholder="Masukkan username"
                   className="bg-transparent outline-none w-full"
                   required
                   disabled={isSubmitting}
+                  minLength={2}
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <div className="flex items-center border rounded-md px-3 py-2 bg-gray-100 focus-within:border-blue-500 focus-within:bg-white transition-colors">
-                <svg
-                  className="w-5 h-5 text-gray-400 mr-2"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Email <span className="text-red-500">*</span>
+              </label>
+              <div className="flex items-center border rounded-md px-3 py-2 bg-gray-50 focus-within:border-blue-500 focus-within:bg-white transition-colors">
+                <Mail className="w-5 h-5 text-gray-400 mr-2" />
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
-                  placeholder="Email"
+                  placeholder="contoh@email.com"
                   className="bg-transparent outline-none w-full"
                   onChange={handleChange}
                   required
@@ -142,18 +201,21 @@ export default function Register() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-              <div className="flex items-center border rounded-md px-3 py-2 bg-gray-100 focus-within:border-blue-500 focus-within:bg-white transition-colors">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Password <span className="text-red-500">*</span>
+              </label>
+              <div className="flex items-center border rounded-md px-3 py-2 bg-gray-50 focus-within:border-blue-500 focus-within:bg-white transition-colors">
                 <Lock className="text-gray-400 mr-2 w-5 h-5" />
                 <input
                   type="password"
                   name="password"
                   value={formData.password}
-                  placeholder="Password"
+                  placeholder="Minimal 6 karakter"
                   className="bg-transparent outline-none w-full"
                   onChange={handleChange}
                   required
                   disabled={isSubmitting}
+                  minLength={6}
                 />
               </div>
             </div>

@@ -38,7 +38,7 @@ import KalibrLogo from "../../assets/kalibr.png";
 // CourseCard Component
 const CourseCard = ({ course }: { course: Course }) => (
   <motion.div
-    key={course.id}
+    key={course.program_id}
     className="bg-[#1D1D1D] rounded-2xl w-[90vw] sm:w-[320px] flex-shrink-0 overflow-hidden border border-kertas hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
     initial={{ opacity: 0, y: 30 }}
     animate={{ opacity: 1, y: 0 }}
@@ -135,7 +135,7 @@ const HeroSec = () => {
               transition={{ duration: 0.5 }}
             >
               {currentCourses.map((course) => (
-                <CourseCard key={course.id} course={course} />
+                <CourseCard key={course.program_id} course={course} />
               ))}
             </motion.div>
           </AnimatePresence>
@@ -183,7 +183,7 @@ export default HeroSec;
 
 // Course Interface & Data
 export interface Course {
-  id: number;
+  program_id: number;
   slug: string;
   title: string;
   title2: string;
@@ -214,6 +214,13 @@ export interface Course {
   }[];
 }
 
+export interface PaymentData{
+  title: string;
+  price: number;
+  program_id: number;
+  slug: string;
+}
+
 const commonBenefits = [
   "Live Online Class intensif dan seru",
   "Lifetime Access Materi (Modul Belajar, Video Pembelajaran)",
@@ -233,7 +240,7 @@ const getAJobExtra = [
 
 export const courses: Course[] = [
   {
-    id: 1,
+    program_id: 28,
     slug: "graphic-design-branding",
     title: "Bootcamp Graphic Design & Branding",
     title2: "Graphic Design & Branding",
@@ -336,7 +343,7 @@ export const courses: Course[] = [
 
   },
   {
-    id: 2,
+    program_id: 2,
     slug: "full-stack-web-development",
     title: "Bootcamp Full-Stack Web Development",
     title2: "Full-Stack Web Developer",
@@ -438,7 +445,7 @@ export const courses: Course[] = [
     ],
   },
   {
-    id: 3,
+    program_id: 3,
     slug: "back-end-development-golang",
     title: "Bootcamp Back-End Development: Golang",
     title2: "Back-End Developer: Golang",
@@ -541,7 +548,7 @@ export const courses: Course[] = [
     ],
   },
   {
-    id: 4,
+    program_id: 4,
     slug: "ui-ux-product-design",
     title: "Bootcamp UI/UX & Product Design",
     title2: "UI/UX & Product Design",
@@ -644,7 +651,7 @@ export const courses: Course[] = [
 
   },
   {
-    id: 5,
+    program_id: 5,
     slug: "data-science-machine-learning",
     title: "Bootcamp Data Science & Machine Learning",
     title2: "Data Science & Machine Learning",
@@ -746,7 +753,7 @@ export const courses: Course[] = [
     ],
   },
   {
-    id: 6,
+    program_id: 6,
     slug: "mobile-development-flutter",
     title: "Bootcamp Mobile Development (Flutter)",
     title2: "Mobile Developer (Flutter)",
@@ -849,7 +856,7 @@ export const courses: Course[] = [
     ],
   },
   {
-    id: 7,
+    program_id: 7,
     slug: "cybersecurity-fundamentals",
     title: "Bootcamp Cybersecurity Fundamentals",
     title2: "Cybersecurity",
@@ -952,7 +959,7 @@ export const courses: Course[] = [
     ],
   },
   {
-    id: 8,
+    program_id: 8,
     slug: "cloud-engineering-aws-gcp",
     title: "Bootcamp Cloud Engineer (AWS/GCP)",
     title2: "Cloud Engineer (AWS/GCP)",
@@ -1055,7 +1062,7 @@ export const courses: Course[] = [
     ],
   },
   {
-    id: 9,
+    program_id: 9,
     slug: "game-development-unity",
     title: "Bootcamp Game Development Unity",
     title2: "Game Developer Unity",

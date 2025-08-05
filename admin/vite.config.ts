@@ -9,10 +9,15 @@ export default defineConfig({
     host: true,
     port: 5174,
     proxy: {
-      '/api': {
-        target: 'http://localhost:3000', // ganti sesuai port backend Express lo
+      '/uploads': {
+        target: 'http://localhost:3000', // Ganti dengan port backend Anda
         changeOrigin: true,
-        secure: false,
+        secure: false
+      },
+      '/api': {
+        target: 'http://localhost:3000', // Backend port
+        changeOrigin: true,
+        secure: false
       },
     },
   },

@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import DefaultPng from "../../assets/default-avatar.png";
-import { useAuth } from "../../contexts/AuthContext"; // Tambahkan ini
+import { useAuth } from "../../contexts/AuthContext";
 
-const BASE_URL = "http://localhost:3000";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
 const EditProfile = () => {
   const [name, setName] = useState("");
@@ -14,16 +14,17 @@ const EditProfile = () => {
   const [location, setLocation] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
-  const auth = useAuth(); // Ambil context auth (supaya bisa refresh data user)
+  const auth = useAuth();
 
   // Ambil data user saat pertama buka halaman
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("/api/user/me", {
+        const res = await axios.get(`${API_BASE_URL}/user/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -33,7 +34,7 @@ const EditProfile = () => {
         setBio(u.bio || "");
         setPhone(u.phone || "");
         setLocation(u.location || "");
-        setPreviewUrl(u.image ? `${BASE_URL}/uploads/${u.image}` : DefaultPng);
+        setPreviewUrl(u.image ? `${API_BASE_URL}/uploads/${u.image}` : DefaultPng);
       } catch (err) {
         console.error("Failed to fetch user", err);
       }
@@ -54,6 +55,8 @@ const EditProfile = () => {
   // Submit form: update data ke backend
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
+    
     try {
       const token = localStorage.getItem("token");
       const formData = new FormData();
@@ -64,21 +67,33 @@ const EditProfile = () => {
       formData.append("location", location);
       if (image) formData.append("image", image);
 
-      await axios.put("/api/user/update", formData, {
+      await axios.put(`${API_BASE_URL}/user/update`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       });
 
-      // Perubahan Penting: Refresh user context biar navbar dan profile update
-      auth.refreshUser();
+      // ✅ PERBAIKAN: Update auth context dengan data baru
+      auth.updateUserData({
+        name,
+        email,
+        bio,
+        phone,
+        location,
+        ...(image && { image: URL.createObjectURL(image) })
+      });
+
+      // ✅ PERBAIKAN: Refresh data dari server
+      await auth.refreshUser();
 
       alert("Profil berhasil diperbarui!");
       navigate("/profile/my-profile");
     } catch (err) {
       console.error("Gagal update", err);
       alert("Gagal update profil");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -97,6 +112,7 @@ const EditProfile = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full bg-ashh border border-white text-white p-3 rounded"
+              disabled={isLoading}
             />
           </div>
 
@@ -106,6 +122,7 @@ const EditProfile = () => {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               className="w-full bg-ashh border border-white text-white p-3 rounded"
+              disabled={isLoading}
             />
           </div>
 
@@ -115,6 +132,7 @@ const EditProfile = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full bg-ashh border border-white text-white p-3 rounded"
+              disabled={isLoading}
             />
           </div>
 
@@ -124,6 +142,7 @@ const EditProfile = () => {
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               className="w-full bg-ashh border border-white text-white p-3 rounded"
+              disabled={isLoading}
             />
           </div>
         </div>
@@ -135,6 +154,7 @@ const EditProfile = () => {
             onChange={(e) => setBio(e.target.value)}
             rows={3}
             className="w-full bg-ashh border border-white text-white p-3 rounded"
+            disabled={isLoading}
           />
         </div>
 
@@ -147,6 +167,7 @@ const EditProfile = () => {
               id="profile-image"
               onChange={handleImageChange}
               className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
+              disabled={isLoading}
             />
             <div className="flex items-center gap-2 bg-ashh border border-white text-white py-2 px-4 rounded">
               <label
@@ -175,15 +196,17 @@ const EditProfile = () => {
         <div className="flex justify-between items-center mt-8">
           <button
             type="submit"
-            className="bg-purple-700 hover:bg-purple-800 text-white font-bold px-6 py-2 rounded cursor-pointer"
+            className="bg-purple-700 hover:bg-purple-800 text-white font-bold px-6 py-2 rounded cursor-pointer disabled:opacity-50"
+            disabled={isLoading}
           >
-            Update
+            {isLoading ? 'Updating...' : 'Update'}
           </button>
 
           <button
             type="button"
             className="bg-white text-black px-6 py-2 rounded font-semibold cursor-pointer"
-            onClick={() => navigate("/profile/setting")}
+            onClick={() => navigate("/profile/my-profile")}
+            disabled={isLoading}
           >
             Cancel
           </button>

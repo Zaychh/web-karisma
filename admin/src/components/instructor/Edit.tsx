@@ -22,7 +22,7 @@ export default function EditInstructorForm() {
 
   // Fetch list mastery
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/instructors/mastery`)
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/instructors/mastery`)
       .then((res) => res.json())
       .then((data) => setMasteries(data))
       .catch((err) => console.error('[ERROR] Fetch mastery failed:', err));
@@ -32,7 +32,7 @@ export default function EditInstructorForm() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/instructors/${id}`);
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/instructors/${id}`);
         const data = await res.json();
         setForm({
           name: data.name,
@@ -41,7 +41,7 @@ export default function EditInstructorForm() {
           mastery: data.mastery,
           status: data.status,
         });
-        setImagePreview(`${import.meta.env.VITE_API_URL}/uploads/${data.image}`);
+        setImagePreview(`${import.meta.env.VITE_API_BASE_URL}/uploads/${data.image}`);
       } catch (err) {
         console.error('[ERROR] Gagal fetch instructor:', err);
       }
@@ -72,7 +72,7 @@ export default function EditInstructorForm() {
     if (image) formData.append('image', image);
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/instructors/${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/instructors/${id}`, {
         method: 'PUT',
         body: formData,
       });
