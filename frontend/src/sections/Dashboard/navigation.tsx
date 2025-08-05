@@ -124,10 +124,10 @@ const Header: React.FC = () => {
             >
               <img
                 src={
-                user?.image
-                  ? `${BASE_URL}/uploads/${user.image}`
-                  : (DefaultPng as string)
-              }
+                  user?.image
+                    ? `${BASE_URL}/uploads/${user.image}`
+                    : (DefaultPng as string)
+                }
                 alt="User"
                 className="w-6 h-6 rounded-full"
               />
@@ -227,13 +227,51 @@ const Header: React.FC = () => {
             >
               Tentang Kami
             </Link>
-            <Link
-              to="/login"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block mt-2 px-5 py-2 bg-rosegold text-onyx font-semibold rounded-full text-center hover:bg-amber-400 transition-all"
-            >
-              Login
-            </Link>
+            {user ? (
+              <div className="flex items-center gap-3 border-t border-gray-600 pt-4">
+                <img
+                  src={
+                    user?.image
+                      ? `${BASE_URL}/uploads/${user.image}`
+                      : (DefaultPng as string)
+                  }
+                  alt="User"
+                  className="w-8 h-8 rounded-full"
+                />
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium text-white">
+                    {user.name}
+                  </span>
+                  <div className="flex gap-2 mt-1">
+                    <Link
+                      to="/profile/my-profile"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="text-xs text-gray-300 hover:text-rosegold"
+                    >
+                      My Profile
+                    </Link>
+                    <button
+                      onClick={() => {
+                        auth.logout();
+                        navigate("/Home");
+                        setMobileMenuOpen(false);
+                      }}
+                      className="text-xs text-gray-300 hover:text-rosegold"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block mt-2 px-5 py-2 bg-rosegold text-onyx font-semibold rounded-full text-center hover:bg-amber-400 transition-all"
+              >
+                Login
+              </Link>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

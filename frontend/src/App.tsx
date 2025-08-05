@@ -8,6 +8,7 @@ import Landing from "./sections/Landing/Landing";
 import About from "./sections/Tentang/page";
 import Login from "./sections/LoginRegister/Login"
 import Dashboard from "./sections/Dashboard/pages";
+import Inventory from "./sections/Dashboard/Inventory/pages";
 import Register from "./sections/LoginRegister/register";
 import Bootcamp from "./sections/Bootcamp/page";
 import BootcampDetail from "./sections/Bootcamp/BootcampDetail";
@@ -34,6 +35,7 @@ function App() {
         <AuthLayout>
           <Routes>
             <Route path="/Dashboard" element={<Dashboard />} />
+            <Route path="/Inventory" element={<Inventory />} />
             <Route path="/bootcamp" element={<Bootcamp />} />
             <Route path="/bootcamp/:slug" element={<BootcampDetail />} />
             <Route path="/free-class" element={<FreeClass />} />

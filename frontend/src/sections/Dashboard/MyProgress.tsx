@@ -3,7 +3,7 @@ import chillCat from '../../assets/Chillcat.png';
 
 export default function MyProgress() {
   return (
-    <section className="w-full bg-[#1c1c1c] text-white py-12 px-4 md:px-12">
+    <section className="w-full bg-abyssal text-white py-12 px-4 md:px-12">
       <div className="mb-8">
         <h2 className="text-xl font-bold">My Progress</h2>
         <p className="text-sm mt-1">Pantau Progress Kamu di bulan ini!</p>
@@ -18,7 +18,7 @@ export default function MyProgress() {
           />
         </div>
 
-        <div className="border border-yellow-500 rounded-md p-6 text-center">
+        <div className="border-2 border-rosegold rounded-md p-6 text-center">
           <img
             src={chillCat}
             alt="Chill Cat"
@@ -30,7 +30,7 @@ export default function MyProgress() {
           <p className="text-sm text-gray-200 mb-6">
             Cobalah untuk mengerjakan kursus yang sudah kamu beli ya! Agar Progres kamu Tertampil!
           </p>
-          <button className="bg-yellow-400 hover:bg-yellow-300 text-black font-semibold px-6 py-2 rounded-full transition">
+          <button className="bg-rosegold hover:bg-pink-300 text-black font-semibold px-6 py-2 rounded-full transition">
             See More
           </button>
         </div>
