@@ -77,7 +77,7 @@ const Benefit = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -40 }}
                     transition={{ duration: 0.5 }}
-                    className="bg-irreng rounded-2xl p-6 md:p-10 flex flex-col md:flex-row items-center gap-8 max-w-5xl mx-auto"
+                    className="bg-abyssal rounded-2xl p-6 md:p-10 flex flex-col md:flex-row items-center gap-8 max-w-5xl mx-auto"
                 >
                     {/* Image */}
                     <motion.img

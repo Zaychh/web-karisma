@@ -129,61 +129,13 @@ const PaymentForm = () => {
         throw new Error(response.data.message || 'Gagal membuat pembayaran');
       }
 
-      const { token: snapToken, order_id } = response.data.data;
+      const { redirect_url } = response.data.data;
 
-      if (!snapToken) {
-        throw new Error('Token pembayaran tidak ditemukan');
+      if (!redirect_url) {
+        throw new Error('Link pembayaran tidak ditemukan');
       }
 
-      // Panggil Snap popup
-      window.snap.pay(snapToken, {
-        onSuccess: function (result: any) {
-          console.log('✅ Payment Success:', result);
-          
-          // Redirect ke halaman success
-          navigate('/payment/success', {
-            state: {
-              order_id: order_id,
-              program_name: title,
-              amount: price,
-              transaction_id: result.transaction_id,
-            }
-          });
-        },
-        
-        onPending: function (result: any) {
-          console.log('⏳ Payment Pending:', result);
-          
-          // Redirect ke halaman pending
-          navigate('/payment/pending', {
-            state: {
-              order_id: order_id,
-              program_name: title,
-              amount: price,
-              transaction_id: result.transaction_id,
-            }
-          });
-        },
-        
-        onError: function (error: any) {
-          console.error('❌ Payment Error:', error);
-          setError('Pembayaran gagal. Silakan coba lagi.');
-          
-          // Optional: redirect ke halaman error
-          navigate('/payment/failed', {
-            state: {
-              order_id: order_id,
-              program_name: title,
-              error_message: error.message || 'Pembayaran gagal',
-            }
-          });
-        },
-        
-        onClose: function () {
-          console.log('🔒 Payment popup closed');
-          setError('Pembayaran dibatalkan. Anda dapat melanjutkan pembayaran kapan saja.');
-        },
-      });
+      window.location.href = redirect_url;
 
     } catch (error: any) {
       console.error('❌ Payment creation failed:', error);

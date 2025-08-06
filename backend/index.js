@@ -10,7 +10,6 @@ const { router: authRoutes } = require('./routes/auth');
 const instructorRoutes = require('./routes/instructor');
 const programRoutes = require('./routes/program');
 const userRoutes = require('./routes/user');
-const clientUpdate = require('./routes/client');
 const toolsRoutes = require('./routes/tools');
 const achievementRoutes = require('./routes/achievement');
 const quizRoutes = require('./routes/quiz');
@@ -60,8 +59,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/instructors', instructorRoutes);
 app.use('/api/program', programRoutes);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-app.use('/api/users', userRoutes);
-app.use('/api/user', clientUpdate);
+app.use('/api/user', userRoutes);   // untuk route: /me, /update, /my-programs, dll
+app.use('/api/users', userRoutes);  // untuk admin: /users, /users/1, dll
 app.use('/api/tools', toolsRoutes);
 app.use('/api/achievements', achievementRoutes);
 app.use('/api/quiz', quizRoutes); // ✅ Quiz routes

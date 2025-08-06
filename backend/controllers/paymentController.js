@@ -3,9 +3,9 @@ const midtransClient = require('midtrans-client');
 
 // Inisialisasi Midtrans
 const snap = new midtransClient.Snap({
-    // isProduction: process.env.MIDTRANS_IS_PRODUCTION === 'false',
-    // serverKey: process.env.MIDTRANS_SERVER_KEY,
-    // clientKey: process.env.MIDTRANS_CLIENT_KEY
+    isProduction: process.env.MIDTRANS_IS_PRODUCTION === 'true',
+    serverKey: process.env.MIDTRANS_SERVER_KEY,
+    clientKey: process.env.MIDTRANS_CLIENT_KEY
 });
 
 // Fungsi untuk create payment
@@ -54,7 +54,7 @@ const createPayment = async (req, res) => {
                 }
             ],
             callbacks: {
-                finish: `${process.env.FRONTEND_URL}/payment/success`
+                finish: `${process.env.FRONTEND_URL}/payment/finish?order_id=${orderId}`,
             }
         };
 
@@ -248,48 +248,41 @@ const handleNotification = async (req, res) => {
 
 // Fungsi untuk check payment status
 const checkPaymentStatus = async (req, res) => {
-    try {
-        const { orderId } = req.params;
-        const user_id = req.user?.user_id;
-        
-        if (!user_id) {
-            return res.status(401).json({
-                success: false,
-                message: 'User not authenticated'
-            });
-        }
-        
-        // Query ke database untuk cek status (dengan filter user_id untuk security)
-        const query = `
-            SELECT t.*, e.status as enrollment_status
-            FROM transactions t
-            LEFT JOIN enrollments e ON t.id = e.transaction_id
-            WHERE t.midtrans_order_id = ? AND t.user_id = ?
-        `;
-        
-        const [result] = await global.db.execute(query, [orderId, user_id]);
-        
-        if (result.length > 0) {
-            res.json({
-                success: true,
-                data: result[0]
-            });
-        } else {
-            res.status(404).json({ 
-                success: false,
-                message: 'Transaction not found'
-            });
-        }
-        
-    } catch (error) {
-        console.error('❌ Check payment status error:', error);
-        res.status(500).json({ 
-            success: false,
-            message: 'Failed to check payment status',
-            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
-        });
+  try {
+    const { orderId } = req.params;
+    const user_id = req.user?.user_id;
+
+    const query = `
+      SELECT t.*, e.status as enrollment_status
+      FROM transactions t
+      LEFT JOIN enrollments e ON t.id = e.transaction_id
+      WHERE t.midtrans_order_id = ?
+        AND (t.user_id = ? OR ? IS NULL)
+    `;
+
+    const [result] = await global.db.execute(query, [orderId, user_id, user_id]);
+
+    if (result.length > 0) {
+      return res.json({
+        success: true,
+        data: result[0],
+      });
+    } else {
+      return res.status(404).json({
+        success: false,
+        message: 'Transaction not found',
+      });
     }
+  } catch (error) {
+    console.error('❌ Check payment status error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to check payment status',
+    });
+  }
 };
+
+
 
 // Fungsi untuk get user transactions
 const getUserTransactions = async (req, res) => {
