@@ -34,7 +34,7 @@ const EditProfile = () => {
         setBio(u.bio || "");
         setPhone(u.phone || "");
         setLocation(u.location || "");
-        setPreviewUrl(u.image ? `${API_BASE_URL}/uploads/${u.image}` : DefaultPng);
+        setPreviewUrl(u.image ? `${API_BASE_URL.replace("/api", "")}/uploads/${u.image}` : DefaultPng);
       } catch (err) {
         console.error("Failed to fetch user", err);
       }
@@ -130,9 +130,8 @@ const EditProfile = () => {
             <label className="block mb-1">Email</label>
             <input
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-ashh border border-white text-white p-3 rounded"
-              disabled={isLoading}
+              readOnly
+              className="w-full bg-ashh border border-white text-white p-3 rounded opacity-70 cursor-not-allowed"
             />
           </div>
 
@@ -184,11 +183,13 @@ const EditProfile = () => {
 
           <div>
             <p className="text-sm mb-1">Preview:</p>
-            <img
-              src={previewUrl}
-              alt="Preview"
-              className="w-24 h-24 rounded-full object-cover border border-white"
-            />
+            {previewUrl && (
+              <img
+                src={previewUrl}
+                alt="Preview"
+                className="w-24 h-24 rounded-full object-cover border border-white"
+              />
+            )}
           </div>
         </div>
 
@@ -199,7 +200,7 @@ const EditProfile = () => {
             className="bg-purple-700 hover:bg-purple-800 text-white font-bold px-6 py-2 rounded cursor-pointer disabled:opacity-50"
             disabled={isLoading}
           >
-            {isLoading ? 'Updating...' : 'Update'}
+            {isLoading ? "Updating..." : "Update"}
           </button>
 
           <button

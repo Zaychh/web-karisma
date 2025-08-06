@@ -95,63 +95,58 @@ exports.updateUser = async (req, res) => {
 
   try {
     // Cek apakah user exists dan bukan admin
-    const [existingUser] = await db.query('SELECT user_id FROM users WHERE user_id = ? AND role = "user"', [id]);
+    const [existingUser] = await db.query(
+      'SELECT user_id FROM users WHERE user_id = ? AND role = "user"',
+      [id]
+    );
     if (existingUser.length === 0) {
-      return res.status(404).json({ error: 'User not found or cannot modify admin' });
+      return res
+        .status(404)
+        .json({ error: "User not found or cannot modify admin" });
     }
 
+    // ❌ Jangan izinkan update email sama sekali
     if (email) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        return res.status(400).json({ error: 'Invalid email format' });
-      }
-
-      const [emailCheck] = await db.query('SELECT user_id FROM users WHERE email = ? AND user_id != ?', [email, id]);
-      if (emailCheck.length > 0) {
-        return res.status(409).json({ error: 'Email already exists' });
-      }
+      console.log("⚠️ Attempt to update email was ignored.");
     }
 
     if (password && password.length < 6) {
-      return res.status(400).json({ error: 'Password must be at least 6 characters long' });
+      return res
+        .status(400)
+        .json({ error: "Password must be at least 6 characters long" });
     }
 
     // Bangun query update dinamis
-    let sql = 'UPDATE users SET ';
+    let sql = "UPDATE users SET ";
     const params = [];
     const updates = [];
 
     if (name) {
-      updates.push('name = ?');
+      updates.push("name = ?");
       params.push(name);
-    }
-
-    if (email) {
-      updates.push('email = ?');
-      params.push(email);
     }
 
     if (password) {
       const saltRounds = 10;
       const hashedPassword = await bcrypt.hash(password, saltRounds);
-      updates.push('password = ?');
+      updates.push("password = ?");
       params.push(hashedPassword);
     }
 
     if (updates.length === 0) {
-      return res.status(400).json({ error: 'No fields to update' });
+      return res.status(400).json({ error: "No fields to update" });
     }
 
-    sql += updates.join(', ') + ' WHERE user_id = ? AND role = "user"';
+    sql += updates.join(", ") + ' WHERE user_id = ? AND role = "user"';
     params.push(id);
 
     const [result] = await db.query(sql, params);
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
 
-    res.json({ message: 'User updated successfully' });
+    res.json({ message: "User updated successfully" });
   } catch (err) {
     console.error('[ERROR] updateUser:', err);
     res.status(500).json({ error: 'Failed to update user' });
@@ -214,5 +209,31 @@ exports.getUsersByRole = async (req, res) => {
   } catch (err) {
     console.error('[ERROR] getUsersByRole:', err);
     res.status(500).json({ error: 'Failed to fetch users by role' });
+  }
+};
+
+// GET - Mengambil program yang dibeli oleh user
+exports.getMyPrograms = async (req, res) => {
+  const db = global.db;
+  const userId = req.user.user_id; // Dari token yang sudah di-decode oleh middleware
+
+  try {
+    const [rows] = await db.query(`
+      SELECT 
+        p.program_id,
+        p.title,
+        p.image_cover,
+        e.status AS enrollment_status
+      FROM enrollments e
+      JOIN program p ON e.program_id = p.program_id
+      WHERE e.user_id = ? AND e.status = 'active'
+      ORDER BY e.created_at DESC
+      LIMIT 3;
+    `, [userId]);
+
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    console.error("[ERROR] getMyPrograms:", err);
+    res.status(500).json({ success: false, error: "Gagal mengambil program user" });
   }
 };

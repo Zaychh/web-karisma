@@ -343,7 +343,7 @@ export const courses: Course[] = [
 
   },
   {
-    program_id: 2,
+    program_id: 31,
     slug: "full-stack-web-development",
     title: "Bootcamp Full-Stack Web Development",
     title2: "Full-Stack Web Developer",

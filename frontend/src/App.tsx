@@ -26,6 +26,7 @@ import EditProfile from "./sections/My-Profile/edit-profile";
 import ChangePassword from "./sections/My-Profile/change-password";
 
 import PaymentForm from "./sections/Payment/PaymentForm";
+import PaymentFinishPage from './sections/Payment/PaymentFinishPage';
 
 // Interface untuk props
 interface RouteProps {
@@ -84,6 +85,14 @@ const AppRoutes: React.FC = () => {
         <ProtectedRoute>
           <AuthLayout>
             <Dashboard />
+          </AuthLayout>
+        </ProtectedRoute>
+      } />
+
+      <Route path="/inventory" element={
+        <ProtectedRoute>
+          <AuthLayout>
+            <Inventory />
           </AuthLayout>
         </ProtectedRoute>
       } />
@@ -175,6 +184,7 @@ const AppRoutes: React.FC = () => {
 
       {/* Payment Route - bisa diakses semua user */}
       <Route path="/pembayaran" element={<PaymentForm />} />
+      <Route path='/payment/finish' element={<PaymentFinishPage />} />
 
       {/* Guest Routes dengan GuestLayout */}
       <Route path="/" element={
