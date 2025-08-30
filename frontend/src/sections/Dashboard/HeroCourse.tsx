@@ -14,6 +14,8 @@ interface Program {
 }
 
 const HeroCourse: React.FC = () => {
+  const [showAllPrograms, setShowAllPrograms] = useState(false);
+
   const { user, isLoading, token } = useAuth();
   const navigate = useNavigate();
   const [programs, setPrograms] = useState<Program[]>([]);
@@ -27,7 +29,10 @@ const HeroCourse: React.FC = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setPrograms(response.data.data || []);
+        console.log("📦 Data program dari API:", response.data.data);
+        setPrograms(
+          Array.isArray(response.data.data) ? response.data.data : []
+        );
       } catch (error) {
         console.error("❌ Gagal ambil program", error);
       } finally {
@@ -39,7 +44,7 @@ const HeroCourse: React.FC = () => {
   }, [token]);
 
   return (
-    <div className="min-h-screen bg-[#1c1c1c] text-white px-4 py-8">
+    <div className="min-h-screen bg-[#1d1d1d] text-white px-4 py-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -83,44 +88,47 @@ const HeroCourse: React.FC = () => {
           ) : (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                {programs.slice(0, 3).map((program) => (
-                  <div
-                    key={program.program_id}
-                    className="border border-white rounded-lg overflow-hidden bg-[#111] shadow-lg"
-                  >
-                    <img
-                      src={`${BASE_API_URL.replace("/api", "")}/uploads/cover/${
-                        program.image_cover
-                      }`}
-                      alt={program.title}
-                      className="w-full h-40 object-cover"
-                    />
+                {(showAllPrograms ? programs : programs.slice(0, 3)).map(
+                  (program) => (
+                    <div
+                      key={program.program_id}
+                      className="border-2 border-white rounded-lg overflow-hidden bg-[#1d1d1d] shadow-lg"
+                    >
+                      <img
+                        src={`${BASE_API_URL.replace(
+                          "/api",
+                          ""
+                        )}/uploads/cover/${program.image_cover}`}
+                        alt={program.title}
+                        className="w-full h-[240px] object-cover"
+                      />
 
-                    <div className="p-4">
-                      <h3 className="font-bold text-lg mb-2">
-                        {program.title}
-                      </h3>
-                      <button
-                        onClick={() =>
-                          navigate(`/my-program/${program.program_id}`)
-                        }
-                        className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded mt-2"
-                      >
-                        Detail
-                      </button>
+                      <div className="p-4 flex flex-col items-center justify-center text-center">
+                        <h3 className="font-bold text-lg mb-3">
+                          {program.title}
+                        </h3>
+                        <button
+                          onClick={() =>
+                            navigate(`/my-program/${program.program_id}`)
+                          }
+                          className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded cursor-pointer"
+                        >
+                          Detail
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                )}
               </div>
 
               {/* See More */}
               {programs.length > 3 && (
                 <div className="text-center mt-6">
                   <button
-                    onClick={() => navigate("/my-program")}
-                    className="bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-2 rounded"
+                    onClick={() => setShowAllPrograms(!showAllPrograms)}
+                    className="bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-2 rounded cursor-pointer"
                   >
-                    See More
+                    {showAllPrograms ? "See Less" : "See More"}
                   </button>
                 </div>
               )}
@@ -129,14 +137,16 @@ const HeroCourse: React.FC = () => {
         </div>
 
         {/* CTA */}
-        <div className="text-center">
-          <button
-            onClick={() => navigate("/bootcamp")}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors"
-          >
-            Lihat Kursus Tersedia
-          </button>
-        </div>
+        {programs.length === 0 && (
+          <div className="text-center">
+            <button
+              onClick={() => navigate("/bootcamp")}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors"
+            >
+              Lihat Kursus Tersedia
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

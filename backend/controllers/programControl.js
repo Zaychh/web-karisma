@@ -68,6 +68,47 @@ exports.getAllPrograms = async (req, res) => {
   }
 };
 
+// === GET /api/program/bootcamp – Ambil Semua Program Kategori Bootcamp
+exports.getBootcampPrograms = async (req, res) => {
+  try {
+    const [rows] = await global.db.query(
+      `SELECT 
+        p.program_id, p.title, p.career_title, p.harga, p.categories, p.deskripsi, p.deskripsi_2, p.image_cover,
+        i.name as instructor_name, i.image as instructor_image, i.mastery as instructor_mastery
+       FROM program p
+       LEFT JOIN instructor i ON p.instructor_id = i.instructor_id
+       WHERE p.categories = 'bootcamp'
+       ORDER BY p.created_at DESC`
+    );
+
+    // Generate slug dari title
+   const dataWithSlug = await Promise.all(rows.map(async (row) => {
+  // Ambil skills dari program_skills
+  const [skills] = await global.db.query(`
+    SELECT s.name FROM skills s
+    JOIN program_skills ps ON s.skill_id = ps.skill_id
+    WHERE ps.program_id = ?
+  `, [row.program_id]);
+
+  return {
+    ...row,
+    slug: row.title.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, ""),
+    image_cover: `uploads/cover/${row.image_cover}`,
+    skills: skills.map((s) => s.name), // ← skill names only
+    desc1: row.deskripsi,
+    desc2: row.deskripsi_2,
+  };
+}));
+
+res.json(dataWithSlug);
+
+  } catch (err) {
+    console.error("❌ getBootcampPrograms error:", err);
+    res.status(500).json({ error: "Gagal mengambil bootcamp" });
+  }
+};
+
+
 // === GET /api/program/:id – Ambil Detail Lengkap Program (DEBUG VERSION)
 // === GET /api/program/:id – Ambil Detail Lengkap Program (UPDATED VERSION)
 exports.getProgramById = async (req, res) => {
@@ -505,6 +546,77 @@ exports.removeAchievementFromProgram = async (req, res) => {
     res.status(500).json({ error: "Gagal menghapus achievement dari program" });
   }
 };
+
+// === GET /api/program/:id/facts – Ambil Fakta untuk Program Tertentu
+exports.getProgramFacts = async (req, res) => {
+  try {
+    const { id: programId } = req.params;
+
+    const [facts] = await global.db.query(`
+      SELECT text FROM program_facts
+      WHERE program_id = ?
+      ORDER BY id ASC
+    `, [programId]);
+
+    res.json(facts.map(f => f.text)); // return array of string
+  } catch (err) {
+    console.error("❌ getProgramFacts error:", err);
+    res.status(500).json({ error: "Gagal mengambil fakta program" });
+  }
+};
+
+// GET /api/program/:id/jobs
+exports.getProgramJobs = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [jobs] = await global.db.query(
+      `SELECT company, position, type, salary, link FROM program_jobs WHERE program_id = ?`,
+      [id]
+    );
+    res.json(jobs);
+  } catch (err) {
+    console.error("❌ getProgramJobs error:", err);
+    res.status(500).json({ error: "Gagal mengambil data jobs" });
+  }
+};
+
+// === GET /api/program/:id/pricing
+exports.getProgramPricing = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const [pricings] = await global.db.query(`
+      SELECT pp.pricing_id, pp.name, pp.price, pp.original_price, pp.is_main,
+             pb.benefit
+      FROM program_pricing pp
+      LEFT JOIN pricing_benefits pb ON pb.pricing_id = pp.pricing_id
+      WHERE pp.program_id = ?
+    `, [id]);
+
+    const result = {};
+
+    for (const row of pricings) {
+      const pid = row.pricing_id;
+      if (!result[pid]) {
+        result[pid] = {
+          pricing_id: pid,
+          name: row.name,
+          price: row.price,
+          originalPrice: row.original_price,
+          isMain: !!row.is_main,
+          benefits: [],
+        };
+      }
+      if (row.benefit) result[pid].benefits.push(row.benefit);
+    }
+
+    res.json(Object.values(result));
+  } catch (err) {
+    console.error("❌ getProgramPricing error:", err);
+    res.status(500).json({ error: "Gagal ambil data pricing" });
+  }
+};
+
 
 // ROUTE YANG PERLU DITAMBAHKAN DI program.js:
 // === Route untuk Program-Achievements ===

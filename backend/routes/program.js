@@ -28,7 +28,11 @@ const upload = multer({ storage });
 // === Route untuk Program ===
 router.post("/", upload.single("image_cover"), programController.createProgram);
 router.get("/", programController.getAllPrograms);
+router.get("/bootcamp", programController.getBootcampPrograms);
 router.get("/categories", programController.getProgramCategories);
+router.get("/:id/pricing", programController.getProgramPricing);
+router.get("/:id/jobs", programController.getProgramJobs);
+router.get("/:id/facts", programController.getProgramFacts);
 router.get("/:id", programController.getProgramById);
 router.put("/:id", upload.single("image_cover"), programController.updateProgram);
 router.delete("/:id", programController.deleteProgram);

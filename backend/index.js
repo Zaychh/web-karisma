@@ -58,6 +58,8 @@ app.use((req, res, next) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/instructors', instructorRoutes);
 app.use('/api/program', programRoutes);
+// Serve folder uploads/cover di URL /uploads/cover
+app.use("/uploads/cover", express.static(path.join(__dirname, "uploads/cover")));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use('/api/user', userRoutes);   // untuk route: /me, /update, /my-programs, dll
 app.use('/api/users', userRoutes);  // untuk admin: /users, /users/1, dll

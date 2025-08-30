@@ -82,6 +82,7 @@ const createPayment = async (req, res) => {
             program_name, 
             orderId
         ]);
+        console.log("✅ Inserted into transactions. ID:", result.insertId);
 
         // Create enrollment record with pending status
         const enrollmentQuery = `
