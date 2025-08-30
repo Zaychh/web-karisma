@@ -227,8 +227,7 @@ exports.getMyPrograms = async (req, res) => {
       FROM enrollments e
       JOIN program p ON e.program_id = p.program_id
       WHERE e.user_id = ? AND e.status = 'active'
-      ORDER BY e.created_at DESC
-      LIMIT 3;
+      ORDER BY e.created_at DESC;
     `, [userId]);
 
     res.json({ success: true, data: rows });
@@ -237,3 +236,86 @@ exports.getMyPrograms = async (req, res) => {
     res.status(500).json({ success: false, error: "Gagal mengambil program user" });
   }
 };
+
+// POST - Memperbarui progress user
+exports.updateProgress = async (req, res) => {
+  try {
+    const userId = req.user.user_id;
+    const { sesi_id } = req.body;
+
+    // 1. Ambil bootcamp_id dari sesi
+    const [sesi] = await global.db.query(
+      'SELECT id_program FROM sesi WHERE id = ?',
+      [sesi_id]
+    );
+
+    if (sesi.length === 0) {
+      return res.status(404).json({ error: 'Sesi tidak ditemukan' });
+    }
+
+    const bootcampId = sesi[0].id_program;
+
+    // 2. Hitung total sesi dalam bootcamp itu
+    const [totalSesi] = await global.db.query(
+      'SELECT COUNT(*) as total FROM sesi WHERE id_program = ?',
+      [bootcampId]
+    );
+
+    const sesiCount = totalSesi[0].total;
+    if (sesiCount === 0) {
+      return res.status(400).json({ error: 'Tidak ada sesi dalam bootcamp ini' });
+    }
+
+    const increment = 100 / sesiCount;
+
+    // 3. Cek apakah progress sudah ada
+    const [existing] = await global.db.query(
+      'SELECT progress_id, percentage FROM user_progress WHERE user_id = ? AND bootcamp_id = ?',
+      [userId, bootcampId]
+    );
+
+    if (existing.length > 0) {
+      const current = existing[0].percentage;
+      const newPercentage = Math.min(current + increment, 100);
+
+      await global.db.query(
+        'UPDATE user_progress SET percentage = ? WHERE progress_id = ?',
+        [newPercentage, existing[0].progress_id]
+      );
+    } else {
+      await global.db.query(
+        'INSERT INTO user_progress (user_id, bootcamp_id, percentage) VALUES (?, ?, ?)',
+        [userId, bootcampId, increment]
+      );
+    }
+
+    res.json({ message: 'Progress berhasil diperbarui' });
+  } catch (err) {
+    console.error("❌ Error update progress:", err);
+    res.status(500).json({ error: 'Gagal update progress' });
+  }
+};
+
+// GET user progress
+exports.getUserProgress = async (req, res) => {
+    try {
+    const { user_id, bootcamp_id } = req.params;
+
+    const [progress] = await global.db.query(
+      'SELECT percentage FROM user_progress WHERE user_id = ? AND bootcamp_id = ?',
+      [user_id, bootcamp_id]
+    );
+
+    if (progress.length === 0) {
+      // ⚡ Jangan 404, kasih default 0
+      return res.json({ success: true, data: { percentage: 0 } });
+    }
+
+    res.json({ success: true, data: progress[0] });
+  } catch (err) {
+    console.error('❌ Error ambil progress:', err);
+    res.status(500).json({ success: false, message: 'Gagal ambil progress' });
+  }
+};
+
+

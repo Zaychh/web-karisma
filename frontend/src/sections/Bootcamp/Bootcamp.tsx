@@ -8,7 +8,7 @@ import FAQ from "../Landing/Faq";
 import Final from "./finalsection";
 
 function Bootcamp() {
-  // Scroll to top ketika komponen About pertama kali dimount
+  // Scroll to top ketika komponen pertama kali dimount
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);

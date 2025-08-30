@@ -105,4 +105,8 @@ router.put('/:id', userController.updateUser);              // PUT /api/users/1 
 // DELETE Routes
 router.delete('/:id', userController.deleteUser);           // DELETE /api/users/1 - Hapus user berdasarkan ID (exclude admin)
 
+router.patch("/progress/update", verifyToken, userController.updateProgress); // POST /api/users/progress/update
+// ✅ Route ini yang dipakai Sidebar detail program yang dibeli user untuk menampilkan progress
+router.get('/progress/:user_id/:bootcamp_id', userController.getUserProgress);
+
 module.exports = router;

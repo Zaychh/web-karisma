@@ -1,8 +1,7 @@
-// routes/quiz.js - FIXED VERSION
-
 const express = require('express');
 const router = express.Router();
 const quizController = require('../controllers/quizController');
+const { verifyToken } = require('../middleware/authMiddleware'); // ✅ import middleware
 
 // Debug middleware untuk log semua request
 router.use((req, res, next) => {
@@ -12,31 +11,33 @@ router.use((req, res, next) => {
     next();
 });
 
-// Admin routes - untuk manage quiz
+// Admin routes
 router.get('/admin/quiz', quizController.getAllQuizzes);
 router.get('/admin/quiz/:id', quizController.getQuizById);
-router.post('/admin/quiz', quizController.createQuiz); // ✅ Endpoint yang benar
+router.post('/admin/quiz', quizController.createQuiz);
 router.put('/admin/quiz/:id', quizController.updateQuiz);
 router.delete('/admin/quiz/:id', quizController.deleteQuiz);
 
-// Alternative routes (untuk fallback)
-router.post('/quiz', quizController.createQuiz); // Fallback endpoint
+// Endpoint baru untuk siswa
+router.get('/siswa/sesi/:sesi_id/quiz', quizController.getQuizForSiswaBySesi);
 
-// Student routes - untuk mengerjakan quiz
+// Student routes
 router.get('/quiz/:id', quizController.getQuizForStudent);
-router.post('/quiz/submit', quizController.submitQuizAnswer);
+
+// ⬇️ tambahin verifyToken di sini
+router.post('/submit', verifyToken, quizController.submitQuizBySesi);
 
 // Get quizzes by program or sesi
 router.get('/program/:program_id/quiz', quizController.getQuizzesByProgram);
 router.get('/sesi/:sesi_id/quiz', quizController.getQuizzesBySesi);
-router.get('/sesi/:sesi_id/quiz/check', quizController.checkSesiQuiz);
+router.get('/sesi/:sesi_id/quiz/check', verifyToken, quizController.checkSesiQuiz);
 
-// Endpoint untuk mendapatkan sesi berdasarkan program (yang dibutuhkan frontend)
+// Endpoint sesi by program
 router.get('/program/:program_id/sesi', async (req, res) => {
     try {
         console.log('🔍 Getting sesi for program:', req.params.program_id);
         const { program_id } = req.params;
-        
+
         if (!global.db) {
             return res.status(500).json({
                 success: false,
@@ -48,9 +49,9 @@ router.get('/program/:program_id/sesi', async (req, res) => {
             'SELECT * FROM sesi WHERE id_program = ? ORDER BY id', 
             [program_id]
         );
-        
+
         console.log('✅ Found sesi:', sesi.length);
-        
+
         res.status(200).json({
             success: true,
             data: sesi
@@ -64,7 +65,7 @@ router.get('/program/:program_id/sesi', async (req, res) => {
     }
 });
 
-// Health check untuk quiz routes
+// Health check
 router.get('/health', (req, res) => {
     res.json({
         status: 'OK',
