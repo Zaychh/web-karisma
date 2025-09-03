@@ -109,7 +109,6 @@ res.json(dataWithSlug);
 };
 
 
-// === GET /api/program/:id – Ambil Detail Lengkap Program (DEBUG VERSION)
 // === GET /api/program/:id – Ambil Detail Lengkap Program (UPDATED VERSION)
 exports.getProgramById = async (req, res) => {
   try {
@@ -194,8 +193,7 @@ exports.getProgramById = async (req, res) => {
     res.status(500).json({ error: "Gagal mengambil program" });
   }
 };
-// === PUT /api/program/:id – Update Program
-// === PUT /api/program/:id – Update Program (FIXED VERSION)
+
 // === PUT /api/program/:id – Update Program (FIXED VERSION)
 exports.updateProgram = async (req, res) => {
   const connection = await global.db.getConnection();
