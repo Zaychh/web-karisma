@@ -224,23 +224,84 @@ exports.forceDeleteAchievement = async (req, res) => {
 };
 
 // GET achievements stats (berapa program yang menggunakan masing-masing achievement)
-exports.getAchievementsStats = async (req, res) => {
+exports.claimAchievement = async (req, res) => {
+  const userId = req.user.id || req.user.user_id; // jaga-jaga
+  const { programId } = req.body;
+
   try {
-    const [stats] = await global.db.query(`
-      SELECT 
-        a.achievement_id,
-        a.name,
-        a.image,
-        COUNT(pa.program_id) as programs_count
-      FROM achievements a
-      LEFT JOIN program_achievements pa ON a.achievement_id = pa.achievement_id
-      GROUP BY a.achievement_id, a.name, a.image
-      ORDER BY programs_count DESC, a.name ASC
-    `);
-    
-    res.status(200).json(stats);
+    // cek apakah achievement sudah pernah diklaim user
+    const [existing] = await global.db.query(
+      `SELECT ua.* 
+       FROM user_achievements ua
+       JOIN program_achievements pa ON ua.achievement_id = pa.achievement_id
+       WHERE ua.user_id = ? AND pa.program_id = ?`,
+      [userId, programId]
+    );
+
+    if (existing.length > 0) {
+      return res.json({
+        success: false,
+        message: "Achievement sudah diklaim sebelumnya",
+      });
+    }
+
+    // ambil achievement yang terkait dengan program
+    const [rows] = await global.db.query(
+      `SELECT a.* 
+       FROM achievements a
+       JOIN program_achievements pa ON a.achievement_id = pa.achievement_id
+       WHERE pa.program_id = ?`,
+      [programId]
+    );
+
+    if (rows.length === 0) {
+      return res.json({ success: false, message: "Achievement tidak ditemukan" });
+    }
+
+    const achievement = rows[0];
+
+    // insert ke user_achievements
+    await global.db.query(
+      "INSERT INTO user_achievements (user_id, achievement_id, obtained_at) VALUES (?, ?, NOW())",
+      [userId, achievement.achievement_id]
+    );
+
+    // 🔥 Tambahin base URL ke image biar bisa dipakai di frontend
+    const baseUrl = process.env.BASE_URL || "http://localhost:3000";
+    const fullAchievement = {
+      ...achievement,
+      image: achievement.image
+        ? `${baseUrl}/uploads/achievements/${achievement.image}`
+        : null,
+    };
+
+    res.json({ success: true, achievement: fullAchievement });
   } catch (error) {
-    console.error("❌ ERROR GET ACHIEVEMENTS STATS:", error);
-    res.status(500).json({ message: 'Gagal mengambil statistik achievements', error: error.message });
+    console.error("❌ ERROR CLAIM ACHIEVEMENT:", error);
+    res.status(500).json({ success: false, message: "Gagal klaim achievement", error: error.message });
   }
 };
+
+// GET achievements milik user (Dashboard user My Achievements)
+exports.getUserAchievements = async (req, res) => {
+  const userId = req.user?.id || req.user?.user_id; // dari token
+  try {
+    const baseUrl = process.env.BASE_URL || "http://localhost:3000";
+    const [rows] = await global.db.query(
+      `SELECT a.achievement_id, a.name, a.description,
+              CONCAT(?, '/uploads/achievements/', a.image) as image
+       FROM user_achievements ua
+       JOIN achievements a ON ua.achievement_id = a.achievement_id
+       WHERE ua.user_id = ?
+       ORDER BY ua.obtained_at DESC`,
+      [baseUrl, userId]
+    );
+
+    res.json(rows);
+  } catch (error) {
+    console.error("❌ ERROR GET USER ACHIEVEMENTS:", error);
+    res.status(500).json({ message: "Gagal mengambil achievement user" });
+  }
+};
+
+

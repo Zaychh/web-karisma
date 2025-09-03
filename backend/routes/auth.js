@@ -14,7 +14,7 @@ const validatePassword = (password) => {
   return password.length >= 8 && /[A-Za-z]/.test(password) && /\d/.test(password);
 };
 
-// Middleware auth token
+// Middleware auth token (dengan mapping id + user_id)
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
@@ -28,7 +28,16 @@ const authenticateToken = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key-here');
-    req.user = decoded;
+
+    // 🔑 Mapping biar backward compatible
+    req.user = {
+      id: decoded.id || decoded.user_id,
+      user_id: decoded.user_id || decoded.id,
+      name: decoded.name,
+      email: decoded.email,
+      role: decoded.role
+    };
+
     next();
   } catch (err) {
     if (err.name === 'TokenExpiredError') {
@@ -175,6 +184,7 @@ router.post('/login', async (req, res) => {
 
     const token = jwt.sign(
       {
+        id: user.user_id,
         user_id: user.user_id,
         name: user.name,
         email: user.email,

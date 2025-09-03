@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 
 interface Sesi {
   id: number;
@@ -25,22 +26,14 @@ interface QuizQuestion {
 export default function Materi() {
   const { id: programId } = useParams();
   const [sessions, setSessions] = useState<Sesi[]>([]);
-  const [quizBySesi, setQuizBySesi] = useState<{
-    [key: number]: QuizQuestion[];
-  }>({});
-  const [selectedAnswers, setSelectedAnswers] = useState<{
-    [quizId: number]: number;
-  }>({});
+  const [quizBySesi, setQuizBySesi] = useState<{ [key: number]: QuizQuestion[] }>({});
+  const [selectedAnswers, setSelectedAnswers] = useState<{ [quizId: number]: number }>({});
   const [submitted, setSubmitted] = useState<{ [sesiId: number]: boolean }>({});
-  const [quizFeedback, setQuizFeedback] = useState<{
-    [sesiId: number]: string;
-  }>({});
+  const [quizFeedback, setQuizFeedback] = useState<{ [sesiId: number]: string }>({});
   const [programTitle, setProgramTitle] = useState("");
 
   // 🔥 state baru untuk simpan jawaban benar (highlight hijau)
-  const [correctAnswers, setCorrectAnswers] = useState<{
-    [quizId: number]: number;
-  }>({});
+  const [correctAnswers, setCorrectAnswers] = useState<{ [quizId: number]: number }>({});
 
   // Ambil judul program
   useEffect(() => {
@@ -67,7 +60,7 @@ export default function Materi() {
       .catch((err) => console.error("❌ Gagal fetch sesi:", err));
   }, [programId]);
 
-  // Ambil quiz per sesi + status user (pakai Promise.all biar konsisten)
+  // Ambil quiz per sesi + status user
   useEffect(() => {
     if (!sessions.length) return;
 
@@ -94,9 +87,6 @@ export default function Materi() {
             const quizData = await quizRes.json();
             const checkData = await checkRes.json();
 
-            console.log("📥 QUIZ DATA sesi", sesi.id, quizData);
-            console.log("📥 CHECK DATA sesi", sesi.id, checkData);
-
             newQuizBySesi[sesi.id] = Array.isArray(quizData?.data)
               ? quizData.data
               : Array.isArray(quizData)
@@ -105,12 +95,9 @@ export default function Materi() {
 
             if (checkData?.success) {
               const answered = checkData.data.filter((q: any) => q.jawaban_id);
-              console.log("✅ ANSWERED sesi", sesi.id, answered);
 
               if (answered.length > 0) {
-                const allCorrect = answered.every(
-                  (a: any) => a.is_correct === 1
-                );
+                const allCorrect = answered.every((a: any) => a.is_correct === 1);
                 newSubmitted[sesi.id] = allCorrect;
 
                 answered.forEach((a: any) => {
@@ -121,9 +108,6 @@ export default function Materi() {
                     }
                   }
                 });
-
-                console.log("📝 newSelected:", newSelected);
-                console.log("📝 newCorrect:", newCorrect);
 
                 newFeedback[sesi.id] = allCorrect
                   ? `✅ ${answered.length}/${answered.length} Jawaban benar! Progress kamu meningkat.`
@@ -138,7 +122,6 @@ export default function Materi() {
         })
       );
 
-      // 🔥 Set state sekali setelah semua data terkumpul
       setQuizBySesi(newQuizBySesi);
       setSelectedAnswers(newSelected);
       setCorrectAnswers(newCorrect);
@@ -147,6 +130,7 @@ export default function Materi() {
     })();
   }, [sessions]);
 
+  // 🔥 fungsi submit quiz
   const handleSubmitQuiz = async (sesiId: number) => {
     const answers = (quizBySesi[sesiId] || [])
       .map((q) => ({
@@ -171,6 +155,7 @@ export default function Materi() {
 
       if (result?.success) {
         if (result.correct) {
+          // ✅ jawaban benar
           setQuizFeedback((prev) => ({
             ...prev,
             [sesiId]: `✅ ${result.correctCount}/${result.total} Jawaban benar! Progress kamu meningkat.`,
@@ -190,6 +175,38 @@ export default function Materi() {
           });
 
           window.dispatchEvent(new Event("progress-updated"));
+
+          // 🔥 cek apakah SEMUA sesi sudah selesai benar
+          const allDone = sessions.every(
+            (s) => submitted[s.id] || s.id === sesiId
+          );
+
+          if (allDone) {
+            try {
+              const resAch = await fetch(`/api/achievements/claim`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ programId }),
+              });
+              const data = await resAch.json();
+              if (data.success) {
+                Swal.fire({
+                  title: "🎉 Selamat!",
+                  text: data.achievement.description,
+                  imageUrl: data.achievement.image,
+                  imageAlt: data.achievement.name,
+                  confirmButtonText: "Mantap!",
+                  background: "#1D1D1D",
+                  color: "#fff",
+                });
+              }
+            } catch (err) {
+              console.error("❌ Error klaim achievement:", err);
+            }
+          }
         } else {
           setQuizFeedback((prev) => ({
             ...prev,
@@ -252,10 +269,7 @@ export default function Materi() {
                     { id: q.opsi_c_id, text: q.opsi_c },
                     { id: q.opsi_d_id, text: q.opsi_d },
                   ] as { id?: number | null; text?: string | null }[]
-                ).filter((o) => o.id && o.text) as {
-                  id: number;
-                  text: string;
-                }[];
+                ).filter((o) => o.id && o.text) as { id: number; text: string }[];
 
                 return (
                   <div key={`quiz-${q.id}`} className="mb-4">
@@ -285,8 +299,7 @@ export default function Materi() {
                                       ? "bg-green-400"
                                       : "bg-gray-400"
                                     : ""
-                                }
-                              `}
+                                }`}
                             >
                               {isSelected && (
                                 <span className="w-2 h-2 rounded-full bg-white"></span>
@@ -322,7 +335,7 @@ export default function Materi() {
 
               <button
                 onClick={() => handleSubmitQuiz(session.id)}
-                disabled={submitted[session.id]} // disable button hanya kalau semua sudah benar
+                disabled={submitted[session.id]}
                 className="mt-4 bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded text-black font-bold cursor-pointer"
               >
                 Submit Quiz

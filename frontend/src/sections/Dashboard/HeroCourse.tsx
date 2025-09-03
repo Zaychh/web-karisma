@@ -44,7 +44,7 @@ const HeroCourse: React.FC = () => {
   }, [token]);
 
   return (
-    <div className="min-h-screen bg-[#1d1d1d] text-white px-4 py-8">
+    <div className="min-h-screen bg-[#1d1d1d] text-white px-4 py-8 font-poppins">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -111,7 +111,7 @@ const HeroCourse: React.FC = () => {
                           onClick={() =>
                             navigate(`/my-program/${program.program_id}`)
                           }
-                          className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded cursor-pointer"
+                          className="bg-[#c8a86b] hover:bg-[#B8956B] text-white px-4 py-2 rounded cursor-pointer"
                         >
                           Detail
                         </button>
@@ -126,7 +126,7 @@ const HeroCourse: React.FC = () => {
                 <div className="text-center mt-6">
                   <button
                     onClick={() => setShowAllPrograms(!showAllPrograms)}
-                    className="bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-2 rounded cursor-pointer"
+                    className="bg-[#c8a86b] hover:bg-[#B8956B] text-white px-6 py-2 rounded cursor-pointer"
                   >
                     {showAllPrograms ? "See Less" : "See More"}
                   </button>
