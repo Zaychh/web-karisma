@@ -132,7 +132,7 @@ console.log("Achievements length:", response.data.achievements?.length);
           <p className="text-lg font-bold mb-1">Total Sesi</p>
           <button
             onClick={() => navigate(`/program/${id}/list-sesi`)}
-            className="border border-white px-4 py-3 rounded-md text-sm hover:bg-white hover:text-black transition"
+            className="border border-white px-4 py-3 rounded-md text-sm hover:bg-white hover:text-black transition cursor-pointer"
           >
             List Total Sesi
           </button>
@@ -228,7 +228,7 @@ console.log("Achievements length:", response.data.achievements?.length);
       {/* Tombol kembali */}
       <button
         onClick={() => navigate("/program")}
-        className="border border-rosegold text-white px-6 py-2 rounded-full flex items-center gap-2 hover:bg-rosegold/20 transition"
+        className="border border-rosegold text-white px-6 py-2 rounded-full flex items-center gap-2 hover:bg-rosegold/20 transition cursor-pointer"
       >
         <ArrowLeft size={18} /> Kembali
       </button>

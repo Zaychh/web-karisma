@@ -70,7 +70,7 @@ const BootcampDetail = () => {
             Siap Berkarir di Industri Kreatif?
           </p>
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-rosegold mb-6 text-center lg:text-left">
-            {data.title}
+            Bootcamp {data.title}
           </h1>
           <p className="text-gray-300 text-lg mb-4 text-justify lg:text-left">
             {/* Ini bisa diisi dengan deskripsi panjang masing-masing bootcamp */}

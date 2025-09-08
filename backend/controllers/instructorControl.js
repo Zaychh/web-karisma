@@ -120,4 +120,14 @@ exports.getAllInstructors = async (req, res) => {
   }
 };
 
-
+exports.getAllInstructorsFull = async (req, res) => {
+  try {
+    const [rows] = await global.db.query(
+      "SELECT instructor_id, name, email, mastery, status, image FROM instructor"
+    );
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    console.error('[ERROR] getAllInstructorsFull:', err);
+    res.status(500).json({ error: 'Failed to fetch instructors' });
+  }
+};

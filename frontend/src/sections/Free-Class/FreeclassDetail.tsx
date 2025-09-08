@@ -1,6 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { freeClasses } from "./section3";
 
 import Section1 from "./detail-head";
 import Section2 from "./Detail-section2";
@@ -9,29 +8,54 @@ import Section4 from "./FaqDetail";
 import Final from "./finalsection";
 import Foot from "../Landing/Footer";
 
-function Detail() {
+// ⬇️ Import interface FreeClass biar konsisten
+import type { FreeClass } from "./section3";
 
-    const { slug } = useParams<{ slug: string }>();
-    const data = freeClasses.find((c) => c.slug === slug);
+function FreeClassDetail() {
+  const { slug } = useParams<{ slug: string }>();
+  const [classes, setClasses] = useState<FreeClass[]>([]);
+  const [loading, setLoading] = useState(true);
 
-    if (!data) {
-        return <div className="text-white p-10 text-center">Bootcamp tidak ditemukan.</div>;
-    }
-    // Scroll to top ketika komponen pertama kali dimount
-   useEffect(() => {
-     window.scrollTo(0, 0);
-   }, [slug]);
+  // Scroll ke atas tiap kali ganti slug
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [slug]);
 
+  // Fetch data freeclass detail by slug
+  useEffect(() => {
+    if (!slug) return;
+
+    fetch(`/api/program/freeclass/${slug}`) // ⬅️ langsung hit endpoint detail
+      .then((res) => res.json())
+      .then((data) => {
+        setClasses([data]); // simpan 1 object ke array, biar gampang dipakai
+      })
+      .catch((err) => console.error("Gagal ambil freeclass:", err))
+      .finally(() => setLoading(false));
+  }, [slug]);
+
+  const data = classes[0];
+
+  if (loading)
+    return <div className="text-white p-10 text-center">Loading...</div>;
+
+  if (!data)
     return (
-        <>
-            <Section1 />
-            <Section2 />
-            <Section3 data={data} />
-            <Section4 />
-            <Final />
-            <Foot />
-        </>
+      <div className="text-white p-10 text-center">
+        Free Class tidak ditemukan.
+      </div>
     );
+
+  return (
+    <>
+      <Section1 />
+      <Section2 />
+      <Section3 data={data} />
+      <Section4 />
+      <Final />
+      <Foot />
+    </>
+  );
 }
 
-export default Detail;
+export default FreeClassDetail;

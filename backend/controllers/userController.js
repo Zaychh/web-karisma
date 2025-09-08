@@ -223,6 +223,7 @@ exports.getMyPrograms = async (req, res) => {
         p.program_id,
         p.title,
         p.image_cover,
+        p.categories,
         e.status AS enrollment_status
       FROM enrollments e
       JOIN program p ON e.program_id = p.program_id
@@ -315,6 +316,25 @@ exports.getUserProgress = async (req, res) => {
   } catch (err) {
     console.error('❌ Error ambil progress:', err);
     res.status(500).json({ success: false, message: 'Gagal ambil progress' });
+  }
+};
+
+// GET - Cek apakah user sudah terdaftar di program
+exports.checkProgramEnrollment = async (req, res) => {
+  const db = global.db;
+  const userId = req.user.user_id;
+  const { programId } = req.params;
+
+  try {
+    const [rows] = await db.query(
+      "SELECT 1 FROM enrollments WHERE user_id = ? AND program_id = ? AND status = 'active' LIMIT 1",
+      [userId, programId]
+    );
+
+    res.json({ isEnrolled: rows.length > 0 });
+  } catch (err) {
+    console.error("[ERROR] checkProgramEnrollment:", err);
+    res.status(500).json({ error: "Gagal cek program" });
   }
 };
 

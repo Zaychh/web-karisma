@@ -187,7 +187,7 @@ const ListSesi = () => {
       {/* Back button */}
       <button
         onClick={() => navigate(`/program`)}
-        className="mt-10 border border-rosegold text-white px-6 py-2 rounded-full flex items-center gap-2 hover:bg-rosegold/20 transition"
+        className="mt-10 border border-rosegold text-white px-6 py-2 rounded-full flex items-center gap-2 hover:bg-rosegold/20 transition cursor-pointer"
       >
         <ArrowLeft size={18} /> Kembali
       </button>

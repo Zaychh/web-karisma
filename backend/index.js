@@ -1,5 +1,3 @@
-// index.js - CORS Configuration Fix
-
 const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
@@ -14,6 +12,8 @@ const toolsRoutes = require('./routes/tools');
 const achievementRoutes = require('./routes/achievement');
 const quizRoutes = require('./routes/quiz');
 const paymentRoutes = require('./routes/payment');
+const summaryRoutes = require('./routes/summary');
+const transactionRoutes = require("./routes/transaction");
 
 const app = express();
 const path = require('path');
@@ -67,6 +67,8 @@ app.use('/api/tools', toolsRoutes);
 app.use('/api/achievements', achievementRoutes);
 app.use('/api/quiz', quizRoutes); // ✅ Quiz routes
 app.use('/api', paymentRoutes);
+app.use('/api', summaryRoutes);
+app.use("/api/transactions", transactionRoutes);
 
 // ✅ Enhanced Health check endpoint
 app.get('/health', (req, res) => {

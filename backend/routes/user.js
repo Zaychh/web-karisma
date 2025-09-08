@@ -89,6 +89,58 @@ router.put("/change-password", verifyToken, async (req, res) => {
 
 router.get("/my-programs", verifyToken, userController.getMyPrograms);
 
+// ✅ Tambahkan program (FreeClass) ke enrollment user
+router.post("/add-program", verifyToken, async (req, res) => {
+  try {
+    const { program_id } = req.body;
+    const userId = req.user.user_id;
+
+    if (!program_id) {
+      return res.status(400).json({ error: "program_id wajib dikirim" });
+    }
+
+    // 🔍 Cek apakah user sudah terdaftar di program ini
+    const [existing] = await global.db.query(
+      "SELECT id FROM enrollments WHERE user_id = ? AND program_id = ?",
+      [userId, program_id]
+    );
+
+    if (existing.length > 0) {
+      return res.status(400).json({ error: "Program sudah ada di inventory" });
+    }
+
+    // 🟢 Insert enrollment baru untuk FreeClass
+    await global.db.query(
+      `INSERT INTO enrollments 
+        (user_id, program_id, transaction_id, enrolled_at, status, progress) 
+       VALUES (?, ?, NULL, NOW(), 'active', 0.00)`,
+      [userId, program_id]
+    );
+
+    res.json({ message: "✅ Program berhasil ditambahkan ke inventory" });
+  } catch (err) {
+    console.error("❌ add-program error:", err);
+    res.status(500).json({ error: "Gagal menambahkan program" });
+  }
+});
+
+// ✅ Cek apakah user sudah terdaftar di program tertentu
+router.get("/check-program/:programId", verifyToken, async (req, res) => {
+  try {
+    const userId = req.user.user_id;
+    const { programId } = req.params;
+
+    const [existing] = await global.db.query(
+      "SELECT id FROM enrollments WHERE user_id = ? AND program_id = ? AND status = 'active' LIMIT 1",
+      [userId, programId]
+    );
+
+    res.json({ isEnrolled: existing.length > 0 });
+  } catch (err) {
+    console.error("❌ check-program error:", err);
+    res.status(500).json({ error: "Gagal memeriksa status program" });
+  }
+});
 
 // GET Routes (ADMIN-ONLY)
 router.get('/', userController.getUsers);                    // GET /api/users - Ambil semua users (exclude admin)

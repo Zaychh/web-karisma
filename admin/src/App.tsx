@@ -10,7 +10,6 @@ import ListSesi from './components/sesi/listsesi';
 import TambahSesi from './components/sesi/addsesi';
 import UserList from './components/users/users';
 import Transaction from './components/transaction/transaction';
-import DetailTransaction from './components/transaction/detail';
 import ToolsList from './components/ManajemenTools/Tools/tools';
 import DetailTools from './components/ManajemenTools/Tools/detail';
 import AddTools from './components/ManajemenTools/Tools/addtool';
@@ -51,7 +50,6 @@ export default function App() {
         
         <Route path="/users" element={<UserList />} />
         <Route path="/transactions" element={<Transaction />} />
-        <Route path="/transaction/detail/:id" element={<DetailTransaction />} />
         <Route path="/tools" element={<ToolsList />} />
         <Route path="/tools/detail/:id" element={<DetailTools />} />
         <Route path="/tools/add" element={<AddTools />} />

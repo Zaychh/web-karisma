@@ -97,14 +97,14 @@ const Header: React.FC = () => {
             </AnimatePresence>
           </div>
 
-          <Link
+          {/* <Link
             to="/blog"
             className={`${
               currentPath === "/blog" ? "text-rosegold" : "text-putih"
             } hover:text-rosegold font-medium font-poppins`}
           >
             Blog
-          </Link>
+          </Link> */}
           <Link
             to="/tentang-kami"
             className={`${
@@ -213,13 +213,13 @@ const Header: React.FC = () => {
                 Free Class
               </Link>
             </div>
-            <Link
+            {/* <Link
               to="/blog"
               onClick={() => setMobileMenuOpen(false)}
               className="block text-putih hover:text-rosegold"
             >
               Blog
-            </Link>
+            </Link> */}
             <Link
               to="/tentang-kami"
               onClick={() => setMobileMenuOpen(false)}

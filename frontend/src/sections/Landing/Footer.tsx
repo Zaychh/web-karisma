@@ -32,16 +32,16 @@ export default function Footer() {
             </li>
             {isLoggedIn && (
               <li>
-                <a href="/inventori" className="hover:text-primary transition">
+                <a href="/inventory" className="hover:text-primary transition">
                   Inventori
                 </a>
               </li>
             )}
-            <li>
+            {/* <li>
               <a href="/blog" className="hover:text-primary transition">
                 Blog
               </a>
-            </li>
+            </li> */}
             <li>
               <a href="/tentang-kami" className="hover:text-primary transition">
                 About

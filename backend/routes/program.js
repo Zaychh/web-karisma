@@ -29,6 +29,8 @@ const upload = multer({ storage });
 router.post("/", upload.single("image_cover"), programController.createProgram);
 router.get("/", programController.getAllPrograms);
 router.get("/bootcamp", programController.getBootcampPrograms);
+router.get("/freeclass", programController.getFreeClassPrograms);
+router.get("/freeclass/:slug", programController.getFreeClassBySlug);
 router.get("/categories", programController.getProgramCategories);
 router.get("/:id/pricing", programController.getProgramPricing);
 router.get("/:id/jobs", programController.getProgramJobs);

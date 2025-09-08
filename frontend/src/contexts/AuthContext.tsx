@@ -29,6 +29,7 @@ interface AuthContextType {
   user: User | null;
   token: string | null;
   isLoading: boolean;
+  isLoggedIn: boolean;
   login: (token: string) => void;
   logout: () => void;
   refreshUser: () => Promise<void>;
@@ -152,6 +153,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     user,
     token,
     isLoading,
+    isLoggedIn: !!user,
     login,
     logout,
     refreshUser,
