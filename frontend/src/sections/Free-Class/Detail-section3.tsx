@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import Swal from "sweetalert2";
 
-import PricingCard from "./PricingCard";
-import { freeClasses } from "./section3";
 import type { FreeClass } from "./section3";
 
 import t1 from "../../assets/chico.png";
@@ -20,48 +20,51 @@ const testimonials = [
     name: "Chico Lachowski",
     role: "Full-Stack Developer",
     company: "Karisma Academy",
-    text: `Program ini menawarkan pembelajaran mendalam...`,
+    text: `Program ini menawarkan pembelajaran mendalam dengan mentor berpengalaman, didukung praktik intensif dan materi yang terstruktur. Yang menarik, peserta berkesempatan mengaplikasikan ilmu langsung melalui kolaborasi dengan UMKM dalam Final Project. Semoga program ini terus berkembang!`,
   },
   {
     img: t2,
     name: "Kim Jaegyun",
     role: "Graphic Designer",
     company: "POT Branding House",
-    text: `Potensi karier dan pasar yang menjanjikan...`,
+    text: `Potensi karier dan pasar yang menjanjikan mendorong saya mendalami Graphic Design. Di sini, saya mendapat bimbingan yang luar biasa – mentor yang sangat dedikasi, tim yang supportif dan materi pembelajaran yang komprehensif. Hasilnya? Saya sudah mendapat tawaran kerja bahkan sebelum menyelesaikan program!`,
   },
   {
     img: t3,
     name: "Diana Cesare",
     role: "Human Resource Manager",
     company: "EY",
-    text: `Bootcamp ini melampaui ekspektasi...`,
+    text: `Bootcamp ini melampaui ekspektasi. Para instruktur tidak hanya informatif, tapi juga proaktif memantau progres dan tugas. Setiap pertanyaan dijawab dengan tuntas. Yang paling penting, mentor membawakan materi yang nyata, membuat pembelajaran jadi sangat aplikatif.`,
   },
   {
     img: t4,
     name: "Siegfried Koigner",
     role: "UI/UX Designer",
     company: "Tokopedia",
-    text: `Saya belajar langsung dari praktisi industri...`,
+    text: `Saya belajar langsung dari praktisi industri dan diberi kebebasan eksplorasi desain produk nyata. Saya makin pede buat terjun ke dunia kerja!`,
   },
   {
     img: t5,
     name: "Saki Yoshida",
     role: "Front-End Developer",
     company: "Traveloka",
-    text: `Kurikulum dan project-nya keren banget!...`,
+    text: `Kurikulum dan project-nya keren banget! Saya bisa punya portofolio nyata yang langsung dilirik recruiter. Mentornya juga sabar banget.`,
   },
   {
     img: t6,
     name: "Sofia Pavlovna Irinovskaya",
     role: "Social Media Strategist",
     company: "IDN Media",
-    text: `Belajar digital marketing dari dasar banget...`,
+    text: `Belajar digital marketing dari dasar banget sampai advance. Kelasnya seru, studinya relevan sama tren industri. Saya jadi ngerti cara ngiklan yang efektif!`,
   },
 ];
 
 export default function DetailSection3({ data }: { data: FreeClass }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [freeClasses, setFreeClasses] = useState<FreeClass[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleResize = () => {
@@ -69,6 +72,21 @@ export default function DetailSection3({ data }: { data: FreeClass }) {
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // fetch rekomendasi lainnya
+  useEffect(() => {
+    fetch("/api/program/freeclass")
+      .then((res) => res.json())
+      .then((list) => {
+        const formatted = list.map((p: any) => ({
+          ...p,
+          image: `http://localhost:3000/${p.image}`,
+          skills: p.skills || [],
+        }));
+        setFreeClasses(formatted);
+      })
+      .catch((err) => console.error("Gagal ambil freeclass:", err));
   }, []);
 
   const itemsPerPage = isMobile ? 1 : 3;
@@ -91,16 +109,31 @@ export default function DetailSection3({ data }: { data: FreeClass }) {
     currentIndex * itemsPerPage + itemsPerPage
   );
 
+  // pricing
+const originalPrice = data.pricing?.[0]?.originalPrice || 0;
+
+const formattedOriginal =
+  originalPrice > 0
+    ? new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      }).format(originalPrice)
+    : null;
+
+const discountPercent =
+  originalPrice > 0
+    ? Math.round(((originalPrice - 0) / originalPrice) * 100)
+    : 0;
+    
   return (
     <section className="bg-ashh text-white py-20 px-6 md:px-16 min-h-screen font-poppins">
-      {/* Heading */}
+      {/* Testimonials */}
       <div className="text-center mb-12">
         <h2 className="text-3xl md:text-4xl text-rosegold font-bold">
           Bagaimana Pendapat Mereka?
         </h2>
       </div>
-
-      {/* Testimonials */}
       <div className="overflow-x-auto no-scrollbar pb-4">
         <div className="flex gap-8 w-max px-2 md:px-4">
           {testimonials.map((item, idx) => (
@@ -134,8 +167,6 @@ export default function DetailSection3({ data }: { data: FreeClass }) {
           Rekomendasi Lainnya
         </h2>
       </div>
-
-      {/* Slider Controls */}
       <div className="relative w-full mx-auto flex items-center justify-center">
         <button
           onClick={handlePrev}
@@ -144,7 +175,6 @@ export default function DetailSection3({ data }: { data: FreeClass }) {
           <ChevronLeft size={28} />
         </button>
 
-        {/* Carousel */}
         <div className="overflow-hidden px-8 py-4 w-full">
           <AnimatePresence mode="wait">
             <motion.div
@@ -175,7 +205,7 @@ export default function DetailSection3({ data }: { data: FreeClass }) {
                       {freeClass.title}
                     </h3>
                     <ul className="space-y-2 text-sm text-gray-300 mb-4 overflow-auto">
-                      {freeClass.skills.map((s, i) => (
+                      {freeClass.skills.map((s: string, i: number) => (
                         <li key={i} className="flex items-start gap-2">
                           <div className="mt-1 w-2 h-2 bg-green-400 rounded-full" />
                           <span>{s}</span>
@@ -204,8 +234,6 @@ export default function DetailSection3({ data }: { data: FreeClass }) {
           <ChevronRight size={28} />
         </button>
       </div>
-
-      {/* Pagination Dots */}
       <div className="flex justify-center mt-6 space-x-2">
         {isMobile ? (
           <>
@@ -238,45 +266,149 @@ export default function DetailSection3({ data }: { data: FreeClass }) {
         )}
       </div>
 
-      {/* Pricing Section */}
+      {/* Pricing Free Pack */}
       <div className="mt-12">
         <h2 className="text-center text-rosegold text-2xl md:text-4xl font-bold mb-10 leading-relaxed">
           Siap Lompat Lebih Tinggi? <br /> Belajar Tanpa Batas, Tanpa Biaya!
         </h2>
 
-        {/* Mobile Scrollable Cards (kalau ada beberapa price gunakan loop map) */}
-        {/* <div className="block md:hidden overflow-x-auto no-scrollbar pb-6 pl-4 pr-4">
-          <div className="flex gap-6 w-max">
-            {data.pricing.map((plan, idx) => (
-              <div key={idx} className="flex-shrink-0 w-[380px]">
-                <PricingCard plan={plan} />
-              </div>
-            ))}
-          </div>
-        </div> */}
+        <div className="flex justify-center">
+          <div className="bg-irreng text-white px-8 py-6 rounded-2xl border border-white w-full max-w-[380px]">
+            <div className="mb-6">
+              <h4 className="text-3xl font-bold text-rosegold mb-3">
+                Free Pack
+              </h4>
 
-        {/* Mobile Centered Card */}
-        <div className="block md:hidden pb-6 px-4">
-          <div className="flex justify-center">
-            {data.pricing.length > 0 && (
-              <div className="w-full max-w-[380px]">
-                <PricingCard plan={data.pricing[0]} />
-              </div>
-            )}
-          </div>
-        </div>
+              {formattedOriginal && (
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="line-through text-sm text-gray-400">
+                    {formattedOriginal}
+                  </span>
+                  {discountPercent > 0 && (
+                    <span className="text-red-500 text-xs bg-white px-2 py-0.5 rounded-md font-bold">
+                      {discountPercent}%
+                    </span>
+                  )}
+                </div>
+              )}
 
-        {/* Desktop View (kalau ada beberapa price gunakan loop map) */}
-        {/* <div className="hidden md:flex flex-col md:flex-row justify-center items-stretch gap-8">
-          {data.pricing.map((plan, idx) => (
-            <PricingCard key={idx} plan={plan} />
-          ))}
-        </div> */}
+              <p className="text-3xl font-bold">Gratis!</p>
+            </div>
 
-        {/* Desktop View */}
-        <div className="hidden md:flex justify-center">
-          <div className="w-full max-w-[380px]">
-            <PricingCard plan={data.pricing[0]} />
+            <div className="mb-6">
+              <button
+                className="bg-white text-black text-xl w-full py-3 rounded-xl font-semibold hover:bg-gray-200 transition cursor-pointer"
+                onClick={async () => {
+                  try {
+                    const token = localStorage.getItem("token");
+                    if (!token) {
+                      Swal.fire({
+                        icon: "warning",
+                        title: "Login Dulu!",
+                        text: "Anda perlu login sebelum mendaftar program.",
+                        confirmButtonText: "Login",
+                        confirmButtonColor: "#c8a86b",
+                      }).then(() => navigate("/login"));
+                      return;
+                    }
+
+                    // 🔎 1. Cek apakah user sudah daftar program ini
+                    const checkRes = await fetch(
+                      `http://localhost:3000/api/user/check-program/${data.id}`,
+                      {
+                        headers: {
+                          Authorization: `Bearer ${token}`,
+                        },
+                      }
+                    );
+
+                    if (!checkRes.ok)
+                      throw new Error("Gagal cek status program");
+
+                    const checkData = await checkRes.json();
+
+                    if (checkData?.isEnrolled) {
+                      // ✅ Jika sudah terdaftar
+                      await Swal.fire({
+                        icon: "info",
+                        title: "Anda sudah mendaftar",
+                        text: "Anda sudah terdaftar di program ini!",
+                        confirmButtonText: "Lihat di Dashboard",
+                        confirmButtonColor: "#c8a86b",
+                      });
+
+                      return navigate("/dashboard");
+                    }
+
+                    // 🚀 2. Jika belum, baru daftar
+                    const res = await fetch(
+                      "http://localhost:3000/api/user/add-program",
+                      {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                          Authorization: `Bearer ${token}`,
+                        },
+                        body: JSON.stringify({
+                          program_id: data.id,
+                        }),
+                      }
+                    );
+
+                    if (!res.ok) throw new Error("Gagal menambahkan program");
+
+                    // ✅ SweetAlert sukses
+                    await Swal.fire({
+                      icon: "success",
+                      title: "Berhasil!",
+                      text: "Program berhasil ditambahkan ke inventory kamu 🎉",
+                      confirmButtonText: "Lihat di Dashboard",
+                      confirmButtonColor: "#c8a86b",
+                    });
+
+                    navigate("/dashboard");
+                  } catch (error) {
+                    console.error("❌ Error add program:", error);
+                    Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "Terjadi kesalahan saat menambahkan program!",
+                    });
+                  }
+                }}
+              >
+                Daftar Sekarang!
+              </button>
+            </div>
+
+            <div>
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="flex justify-between items-center w-full text-sm text-gray-300 cursor-pointer"
+              >
+                Benefit
+                <span className="cursor-pointer">
+                  {isOpen ? <FaChevronUp /> : <FaChevronDown />}
+                </span>
+              </button>
+
+              {isOpen && (
+                <ul className="mt-3 pl-4 text-lg space-y-2 min-h-[24px]">
+                  {[
+                    "Ikut 2 Sesi Live Class",
+                    "Akses Community Event Unlimited",
+                    "Live Practice for Update Your Portfolio",
+                    "Materi All Class",
+                    "Bonus 3 Recording Class",
+                  ].map((item, idx) => (
+                    <li key={idx} className="text-white relative pl-4">
+                      <span className="absolute left-0 top-1.5 w-2 h-2 bg-green-400 rounded-full" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </div>
       </div>

@@ -31,6 +31,7 @@ export default function Materi() {
   const [submitted, setSubmitted] = useState<{ [sesiId: number]: boolean }>({});
   const [quizFeedback, setQuizFeedback] = useState<{ [sesiId: number]: string }>({});
   const [programTitle, setProgramTitle] = useState("");
+  const [programCategory, setProgramCategory] = useState<string | null>(null);
 
   // 🔥 state baru untuk simpan jawaban benar (highlight hijau)
   const [correctAnswers, setCorrectAnswers] = useState<{ [quizId: number]: number }>({});
@@ -41,8 +42,9 @@ export default function Materi() {
     fetch(`/api/program/${programId}`)
       .then((res) => res.json())
       .then((data) => {
-        if (data && (data.judul_program || data.title)) {
-          setProgramTitle(data.judul_program || data.title);
+        if (data) {
+          setProgramTitle(data.judul_program || data.title || "");
+          setProgramCategory(data.categories || null);
         }
       })
       .catch((err) => console.error("❌ Gagal ambil program:", err));
@@ -182,29 +184,47 @@ export default function Materi() {
           );
 
           if (allDone) {
-            try {
-              const resAch = await fetch(`/api/achievements/claim`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ programId }),
-              });
-              const data = await resAch.json();
-              if (data.success) {
-                Swal.fire({
-                  title: "🎉 Selamat!",
-                  text: data.achievement.description,
-                  imageUrl: data.achievement.image,
-                  imageAlt: data.achievement.name,
-                  confirmButtonText: "Mantap!",
-                  background: "#1D1D1D",
-                  color: "#fff",
+            if (programCategory?.toLowerCase().includes("bootcamp")) {
+              // ✅ Klaim achievement khusus bootcamp
+              try {
+                const resAch = await fetch(`/api/achievements/claim`, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body: JSON.stringify({ programId }),
                 });
+
+                const data = await resAch.json();
+                if (data.success) {
+                  Swal.fire({
+                    title: "🎉 Selamat!",
+                    text: data.achievement.description,
+                    imageUrl: data.achievement.image,
+                    imageAlt: data.achievement.name,
+                    confirmButtonText: "Mantap!",
+                    background: "#1D1D1D",
+                    color: "#fff",
+                  });
+                } else {
+                  console.warn(
+                    "⚠️ Tidak ada achievement ditemukan untuk program ini"
+                  );
+                }
+              } catch (err) {
+                console.error("❌ Error klaim achievement:", err);
               }
-            } catch (err) {
-              console.error("❌ Error klaim achievement:", err);
+            } else {
+              // ✅ Tampilkan pesan sukses untuk freeclass
+              Swal.fire({
+                title: "✅ Selesai!",
+                text: "Kamu sudah menyelesaikan semua sesi freeclass 🎉",
+                icon: "success",
+                confirmButtonText: "Mantap!",
+                background: "#1D1D1D",
+                color: "#fff",
+              });
             }
           }
         } else {
@@ -239,7 +259,11 @@ export default function Materi() {
   return (
     <div className="bg-[#1D1D1D] min-h-screen text-white px-8 py-10">
       <h1 className="text-3xl font-bold text-center mb-10 leading-relaxed">
-        Selamat datang di Bootcamp <br /> {programTitle || "Loading..."}
+        Selamat datang di{" "}
+        {programCategory?.toLowerCase().includes("bootcamp")
+          ? "Bootcamp"
+          : "Program"}{" "}
+        <br /> {programTitle || "Loading..."}
       </h1>
 
       {sessions.map((session, idx) => (
@@ -269,7 +293,10 @@ export default function Materi() {
                     { id: q.opsi_c_id, text: q.opsi_c },
                     { id: q.opsi_d_id, text: q.opsi_d },
                   ] as { id?: number | null; text?: string | null }[]
-                ).filter((o) => o.id && o.text) as { id: number; text: string }[];
+                ).filter((o) => o.id && o.text) as {
+                  id: number;
+                  text: string;
+                }[];
 
                 return (
                   <div key={`quiz-${q.id}`} className="mb-4">

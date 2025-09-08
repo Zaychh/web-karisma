@@ -615,6 +615,135 @@ exports.getProgramPricing = async (req, res) => {
   }
 };
 
+// === GET /api/program/freeclass – Ambil Semua Program Kategori Free Class
+exports.getFreeClassPrograms = async (req, res) => {
+  try {
+    const [rows] = await global.db.query(
+      `SELECT 
+         p.program_id, p.title, p.career_title, p.harga, p.categories, 
+         p.image_cover,
+         i.name as instructor_name, i.image as instructor_image, i.mastery as instructor_mastery
+       FROM program p
+       LEFT JOIN instructor i ON p.instructor_id = i.instructor_id
+       WHERE LOWER(p.categories) IN ('freeclass','free class')
+       ORDER BY p.created_at DESC`
+    );
+
+    const dataWithSlug = await Promise.all(
+      rows.map(async (row) => {
+        const [skills] = await global.db.query(
+          `SELECT s.name 
+           FROM skills s
+           JOIN program_skills ps ON s.skill_id = ps.skill_id
+           WHERE ps.program_id = ?`,
+          [row.program_id]
+        );
+
+        return {
+          id: row.program_id,
+          title: row.title,
+          title2: row.career_title, // mapping ke career_title
+          slug: row.title
+            .toLowerCase()
+            .replace(/\s+/g, "-")
+            .replace(/[^\w-]/g, ""),
+          image: `uploads/cover/${row.image_cover}`,
+          skills: skills.map((s) => s.name),
+        };
+      })
+    );
+
+    res.json(dataWithSlug);
+  } catch (err) {
+    console.error("❌ getFreeClassPrograms error:", err);
+    res.status(500).json({ error: "Gagal mengambil free class" });
+  }
+};
+
+// === GET /api/program/freeclass/:slug – Ambil 1 Free Class berdasarkan slug
+exports.getFreeClassBySlug = async (req, res) => {
+  try {
+    const { slug } = req.params;
+
+    const [rows] = await global.db.query(
+      `SELECT 
+         p.program_id, p.title, p.career_title, p.harga, p.categories, 
+         p.image_cover,
+         i.name as instructor_name, i.image as instructor_image, 
+         i.mastery as instructor_mastery
+       FROM program p
+       LEFT JOIN instructor i ON p.instructor_id = i.instructor_id
+       WHERE LOWER(p.categories) IN ('freeclass','free class')`
+    );
+
+    const found = rows
+      .map((row) => ({
+        id: row.program_id,
+        title: row.title,
+        title2: row.career_title,
+        slug: row.title
+          .toLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(/[^\w-]/g, ""),
+        image: `uploads/cover/${row.image_cover}`,
+        harga: row.harga,
+        instructor: {
+          name: row.instructor_name,
+          role: row.instructor_mastery,
+          image: row.instructor_image
+            ? `uploads/${row.instructor_image}` 
+            : null,
+          linkedin: row.instructor_name
+            ? `https://linkedin.com/in/${row.instructor_name
+                .toLowerCase()
+                .replace(/\s+/g, "-")
+                .replace(/[^a-z0-9-]/g, "")}`
+            : null,
+        },
+      }))
+      .find((r) => r.slug === slug);
+
+    if (!found) {
+      return res.status(404).json({ error: "Free class tidak ditemukan" });
+    }
+
+    // Ambil skills
+    const [skills] = await global.db.query(
+      `SELECT s.name 
+       FROM skills s
+       JOIN program_skills ps ON s.skill_id = ps.skill_id
+       WHERE ps.program_id = ?`,
+      [found.id]
+    );
+
+    found.skills = skills.map((s) => s.name);
+
+    // Tambahkan pricing khusus FreeClass
+    found.pricing = [
+      {
+        pricing_id: 0, // dummy
+        name: "Free Pack",
+        price: 0,
+        originalPrice: found.harga, // harga asli dari DB
+        isMain: true,
+        benefits: [
+          "Ikut 2 Sesi Live Class",
+          "Akses Community Event Unlimited",
+          "Live Practice for Update Your Portfolio",
+          "Materi All Class",
+          "Bonus 3 Recording Class",
+        ],
+      },
+    ];
+
+    res.json(found);
+  } catch (err) {
+    console.error("❌ getFreeClassBySlug error:", err);
+    res.status(500).json({ error: "Gagal ambil free class by slug" });
+  }
+};
+
+
 
 // ROUTE YANG PERLU DITAMBAHKAN DI program.js:
 // === Route untuk Program-Achievements ===

@@ -124,7 +124,7 @@ export default function MyAchievement() {
             <div>
               <p className="text-lg text-gray-300 mb-2">
                 Sejauh Ini kamu sudah mendapatkan achievement sebanyak{" "}
-                {achievements.length}
+                ({achievements.length})
               </p>
               <h3 className="text-xl font-bold leading-snug">
                 Ayo Semangat Untuk <br /> Mengoleksinya!

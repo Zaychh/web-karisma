@@ -216,13 +216,13 @@ const ProgramManagementPage: React.FC = () => {
         <div className="flex gap-2">
           <button
             onClick={() => navigate("/program/add")}
-            className="bg-[#4e5ee4] hover:bg-[#3e4dd4] text-white text-sm px-4 py-2 rounded shadow"
+            className="bg-[#4e5ee4] hover:bg-[#3e4dd4] text-white text-sm px-4 py-2 rounded shadow cursor-pointer"
           >
             + Add Free Class
           </button>
           <button
             onClick={() => navigate("/program/add")}
-            className="bg-[#2b2f80] hover:bg-[#1f2260] text-white text-sm px-4 py-2 rounded shadow"
+            className="bg-[#2b2f80] hover:bg-[#1f2260] text-white text-sm px-4 py-2 rounded shadow cursor-pointer"
           >
             + Add Program
           </button>
@@ -234,7 +234,7 @@ const ProgramManagementPage: React.FC = () => {
       {/* Tabs */}
       <div className="flex gap-6 text-sm font-semibold border-b border-gray-300 mb-4">
         <button
-          className={`pb-2 ${
+          className={`cursor-pointer pb-2 ${
             activeTab === "bootcamp"
               ? "border-b-2 border-blue-500 text-blue-600"
               : ""
@@ -244,7 +244,7 @@ const ProgramManagementPage: React.FC = () => {
           Bootcamp Program
         </button>
         <button
-          className={`pb-2 ${
+          className={`cursor-pointer pb-2 ${
             activeTab === "free"
               ? "border-b-2 border-blue-500 text-blue-600"
               : ""
@@ -311,7 +311,7 @@ const ProgramManagementPage: React.FC = () => {
                     onClick={() =>
                       navigate(`/program/detail/${program.program_id}`)
                     }
-                    className="bg-[#4e5ee4] hover:bg-[#3e4dd4] text-white px-3 py-1 text-sm rounded"
+                    className="bg-[#4e5ee4] hover:bg-[#3e4dd4] text-white px-3 py-1 text-sm rounded cursor-pointer"
                   >
                     Detail
                   </button>
@@ -321,7 +321,7 @@ const ProgramManagementPage: React.FC = () => {
                       onClick={() =>
                         navigate(`/program/${program.program_id}/tambah-sesi`)
                       }
-                      className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 text-sm rounded"
+                      className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 text-sm rounded cursor-pointer"
                     >
                       + Sesi
                     </button>
@@ -330,7 +330,7 @@ const ProgramManagementPage: React.FC = () => {
                       onClick={() =>
                         navigate(`/program/edit/${program.program_id}`)
                       }
-                      className="w-7 h-7 flex items-center justify-center bg-yellow-400 hover:bg-yellow-500 rounded-sm text-black"
+                      className="w-7 h-7 flex items-center justify-center bg-yellow-400 hover:bg-yellow-500 rounded-sm text-black cursor-pointer"
                       title="Edit"
                     >
                       <FaEdit size={12} />
@@ -338,7 +338,7 @@ const ProgramManagementPage: React.FC = () => {
 
                     <button
                       onClick={() => openDeleteModal(program)}
-                      className="w-7 h-7 flex items-center justify-center bg-red-600 hover:bg-red-700 rounded-sm text-white transition-colors"
+                      className="w-7 h-7 flex items-center justify-center bg-red-600 hover:bg-red-700 rounded-sm text-white transition-colors cursor-pointer"
                       title="Delete Program"
                     >
                       <FaTrash size={12} />

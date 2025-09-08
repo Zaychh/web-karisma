@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const instructorController = require('../controllers/instructorControl');
+const { getAllInstructorsFull } = require('../controllers/instructorControl');
 const upload = require('../middleware/upload');
 
 // CRUD
 router.get('/', instructorController.getInstructors);
+router.get("/all", getAllInstructorsFull);
 router.get('/mastery', instructorController.getMasteryEnum);
 router.get('/:id', instructorController.getInstructorById);
 router.post('/', upload.single('image'), instructorController.createInstructor);

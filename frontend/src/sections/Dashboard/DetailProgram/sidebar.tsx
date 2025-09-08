@@ -10,6 +10,7 @@ export default function Sidebar() {
   const { id: programId } = useParams(); // dari URL misalnya: /materi/31
   const [progress, setProgress] = useState<number>(0);
   const [programTitle, setProgramTitle] = useState<string>("Loading...");
+  const [programCategory, setProgramCategory] = useState<string | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
 
   // ➕ Utility untuk highlight menu aktif
@@ -40,37 +41,39 @@ export default function Sidebar() {
   }, []);
 
   // ✅ Fetch progress bootcamp user
-useEffect(() => {
-  const fetchProgress = () => {
-    if (!userId || !programId) return;
+  useEffect(() => {
+    const fetchProgress = () => {
+      if (!userId || !programId) return;
 
-    fetch(`${import.meta.env.VITE_API_URL}/users/progress/${userId}/${programId}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Gagal ambil progress");
-        return res.json();
-      })
-      .then((data) => {
-        if (typeof data.percentage === "number") {
-          setProgress(data.percentage);
-        } else if (data?.data?.percentage !== undefined) {
-          setProgress(data.data.percentage);
-        } else {
+      fetch(
+        `${import.meta.env.VITE_API_URL}/users/progress/${userId}/${programId}`
+      )
+        .then((res) => {
+          if (!res.ok) throw new Error("Gagal ambil progress");
+          return res.json();
+        })
+        .then((data) => {
+          if (typeof data.percentage === "number") {
+            setProgress(data.percentage);
+          } else if (data?.data?.percentage !== undefined) {
+            setProgress(data.data.percentage);
+          } else {
+            setProgress(0);
+          }
+        })
+        .catch((err) => {
+          console.error("❌ Gagal ambil progress:", err);
           setProgress(0);
-        }
-      })
-      .catch((err) => {
-        console.error("❌ Gagal ambil progress:", err);
-        setProgress(0);
-      });
-  };
+        });
+    };
 
-  fetchProgress(); // load awal
+    fetchProgress(); // load awal
 
-  // 🔥 Listen event dari Materi.tsx
-  window.addEventListener("progress-updated", fetchProgress);
+    // 🔥 Listen event dari Materi.tsx
+    window.addEventListener("progress-updated", fetchProgress);
 
-  return () => window.removeEventListener("progress-updated", fetchProgress);
-}, [userId, programId]);
+    return () => window.removeEventListener("progress-updated", fetchProgress);
+  }, [userId, programId]);
 
   // ✅ Fetch judul program
   useEffect(() => {
@@ -79,15 +82,20 @@ useEffect(() => {
     fetch(`/api/program/${programId}`)
       .then((res) => res.json())
       .then((data) => {
-        if (data?.judul_program || data?.title) {
-          setProgramTitle(data.judul_program || data.title);
+        if (data) {
+          setProgramTitle(
+            data.judul_program || data.title || "Program Tidak Ditemukan"
+          );
+          setProgramCategory(data.categories || null); // ✅ Simpan kategori
         } else {
           setProgramTitle("Program Tidak Ditemukan");
+          setProgramCategory(null);
         }
       })
       .catch((err) => {
         console.error("❌ Gagal ambil judul program:", err);
         setProgramTitle("Error memuat program");
+        setProgramCategory(null);
       });
   }, [programId]);
 
@@ -102,7 +110,9 @@ useEffect(() => {
         {/* Info Program */}
         <div className="px-6 mb-6">
           <h2 className="text-xl font-bold text-white leading-snug">
-            Bootcamp {programTitle}
+            {programCategory?.toLowerCase().includes("bootcamp")
+              ? `Bootcamp ${programTitle}`
+              : programTitle}
           </h2>
 
           <div className="mt-3">

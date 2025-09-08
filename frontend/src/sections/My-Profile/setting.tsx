@@ -17,7 +17,7 @@ const Setting = () => {
           <div className="bg-white text-black rounded-xl p-6 w-72 flex flex-col items-start shadow">
             <img src={Profil} alt="My Profile" className="w-16 h-16 mb-4" />
             <h2 className="text-2xl font-bold mb-1">My Profile</h2>
-            <p className="text-lg text-gray-700 mb-4">Edit your profil</p>
+            <p className="text-lg text-gray-700 mb-4">Edit your profile</p>
             <Link
               to="/profile/edit-profile"
               className="w-full text-center px-4 py-2 border-2 border-black rounded-full font-semibold hover:bg-black hover:text-white transition"
