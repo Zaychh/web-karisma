@@ -1,30 +1,11 @@
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
-// === INTERFACE ===
-interface Course {
-  program_id: number;
-  title: string;
-  slug: string;
-  harga: number;
-  image_cover: string;
-  instructor_name: string;
-  instructor_mastery: string;
-  skills: string[]; // sementara kosong
-  duration?: string; // opsional
-  image: string; // mapped from image_cover
-  pricing: {
-    name: string;
-    price: number;
-    originalPrice?: number;
-    benefits: string[];
-  }[];
-}
+import { useBootcamp } from "./useBootcamp";
 
 // === COMPONENT CARD INDIVIDU ===
-const CourseCard = ({ course }: { course: Course }) => (
+const CourseCard = ({ course }: { course: any }) => (
   <motion.div
     key={course.program_id}
     className="bg-[#1D1D1D] rounded-2xl w-[90vw] sm:w-[320px] flex-shrink-0 overflow-hidden border border-kertas hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
@@ -50,7 +31,7 @@ const CourseCard = ({ course }: { course: Course }) => (
       </h3>
       <ul className="space-y-2 text-sm text-gray-300 mb-4 overflow-auto">
         {course.skills.length > 0 ? (
-          course.skills.map((s, i) => (
+          course.skills.map((s: string, i: number) => (
             <li key={i} className="flex items-start gap-2">
               <div className="mt-1 w-2 h-2 bg-green-400 rounded-full" />
               <span>{s}</span>
@@ -71,10 +52,9 @@ const CourseCard = ({ course }: { course: Course }) => (
 
 // === SECTION UTAMA ===
 const HeroSec = () => {
-  const [courses, setCourses] = useState<Course[]>([]);
+  const { courses, loading } = useBootcamp();
   const [page, setPage] = useState(0);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const [loading, setLoading] = useState(true);
+  const [isMobile] = useState(window.innerWidth <= 768);
 
   const pageSize = isMobile ? 1 : 3;
   const totalPages = Math.ceil(courses.length / pageSize);
@@ -85,29 +65,6 @@ const HeroSec = () => {
   const handlePrev = () =>
     setPage((prev) => (prev - 1 + totalPages) % totalPages);
   const goToPage = (p: number) => setPage(p);
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 768);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  useEffect(() => {
-    fetch("/api/program/bootcamp")
-      .then((res) => res.json())
-      .then((data) => {
-        const formatted = data.map((p: any) => ({
-          ...p,
-          slug: p.slug, // backend sudah auto generate slug
-          image: `http://localhost:3000/${p.image_cover}`,
-          skills: p.skills || [],
-          duration: "3 atau 6 bulan", // opsional statis
-        }));
-        setCourses(formatted);
-      })
-      .catch((err) => console.error("Gagal ambil bootcamp:", err))
-      .finally(() => setLoading(false));
-  }, []);
 
   if (loading) {
     return <div className="text-white text-center py-20">Loading...</div>;
