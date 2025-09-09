@@ -2,150 +2,10 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
+import { useBootcamp } from "../Bootcamp/useBootcamp";
 import HeroSec from "../Free-Class/section3";
 
-import graph from "../../assets/graphdes.png";
-import back from "../../assets/backend.png";
-import full from "../../assets/fullstack.png";
-import mock from "../../assets/Mock.png";
-import ml from "../../assets/Datascience.png";
-import mobile from "../../assets/MobDev.png";
-import cyber from "../../assets/CybSec.png";
-import game from "../../assets/UnityGameDev.png";
-
-interface Course {
-  id: number;
-  slug: string;
-  title: string;
-  duration: string;
-  image: string;
-  skills: string[];
-}
-
-const courses: Course[] = [
-  // Slide 1
-  {
-    id: 1,
-    slug: "graphic-design-branding",
-    title: "Bootcamp Graphic Design & Branding",
-    duration: "3 atau 6 bulan",
-    image: graph,
-    skills: [
-      "Prinsip desain grafis dan elemen visual yang kuat",
-      "Logo, ikon, ilustrasi, dan brand identity",
-      "Presentasi visual (poster, sosial media, iklan)",
-    ],
-  },
-  {
-    id: 2,
-    slug: "full-stack-web-development",
-    title: "Bootcamp Full-Stack Web Development",
-    duration: "3 atau 6 bulan",
-    image: full,
-    skills: [
-      "Dasar-dasar pemrograman (HTML, CSS, JavaScript)",
-      "Pengembangan web (front-end dan back-end)",
-      "Pengenalan frameworks seperti React, Node.js, atau Django",
-      "Peluang Karir Cerah (Web Developer, Mobile App Developer, Full-Stack Developer)",
-    ],
-  },
-  {
-    id: 3,
-    slug: "back-end-development-golang",
-    title: "Bootcamp Back-End Development: Golang",
-    duration: "3 atau 6 bulan",
-    image: back,
-    skills: [
-      "Konsep inti DevOps & Jaringan Esensial",
-      "Penguasaan Dasar Linux & Scripting Awal",
-      "Revolusi Aplikasi dengan Kontainerisasi Docker",
-      "Observabilitas Sistem & Wawasan Cloud Computing",
-    ],
-  },
-  // Slide 2
-  {
-    id: 4,
-    slug: "ui-ux-product-design",
-    title: "Bootcamp UI/UX & Product Design",
-    duration: "3 atau 6 bulan",
-    image: mock,
-    skills: [
-      "Dasar UI/UX & Design Thinking",
-      "Research dan User Persona",
-      "Wireframing & Prototyping",
-      "Handoff ke Developer",
-    ],
-  },
-  {
-    id: 5,
-    slug: "data-science-machine-learning",
-    title: "Bootcamp Data Science & Machine Learning",
-    duration: "3 atau 6 bulan",
-    image: ml,
-    skills: [
-      "Python for Data Science",
-      "Exploratory Data Analysis",
-      "Machine Learning dasar",
-      "Deploy model ke production",
-    ],
-  },
-  {
-    id: 6,
-    slug: "mobile-development-flutter",
-    title: "Bootcamp Mobile Development (Flutter)",
-    duration: "3 atau 6 bulan",
-    image: mobile,
-    skills: [
-      "Fundamental Flutter & Dart",
-      "Membangun aplikasi mobile multi-platform",
-      "State Management & UI Performance",
-      "Integrasi API & Firebase",
-    ],
-  },
-  // Slide 3
-  {
-    id: 7,
-    slug: "cybersecurity-fundamentals",
-    title: "Bootcamp Cybersecurity Fundamentals",
-    duration: "3 atau 6 bulan",
-    image: cyber,
-    skills: [
-      "Network Security & Firewall",
-      "Ethical Hacking Basics",
-      "Security Auditing Tools",
-      "Incident Response & Risk Management",
-    ],
-  },
-  {
-    id: 8,
-    slug: "cloud-engineering-aws-gcp",
-    title: "Bootcamp Cloud Engineer (AWS/GCP)",
-    duration: "3 atau 6 bulan",
-    image: back,
-    skills: [
-      "Cloud Fundamentals",
-      "Deployment & Monitoring",
-      "Scalability & Load Balancing",
-      "Hands-on AWS/GCP",
-    ],
-  },
-  {
-    id: 9,
-    slug: "game-development-unity",
-    title: "Bootcamp Game Development Unity",
-    duration: "3 atau 6 bulan",
-    image: game,
-    skills: [
-      "C# Programming Basics",
-      "2D/3D Game Design & Animation Menggunakan Blender",
-      "Game Physics & Sound",
-      "Deploy ke Play Store & App Store",
-    ],
-  },
-];
-
-const CourseCard = ({ course }: { course: Course }) => (
+const CourseCard = ({ course }: { course: any }) => (
   <motion.div
     key={course.id}
     className="bg-onyx rounded-2xl w-[320px] flex-shrink-0 overflow-hidden border border-kertas hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
@@ -166,14 +26,20 @@ const CourseCard = ({ course }: { course: Course }) => (
         </span>
         <span className="text-sm text-gray-400">{course.duration}</span>
       </div>
-      <h3 className="text-lg font-bold text-white mb-3">{course.title}</h3>
+      <h3 className="text-lg font-bold text-white mb-3">
+        Bootcamp {course.title}
+      </h3>
       <ul className="space-y-2 text-sm text-gray-300 mb-4 overflow-auto">
-        {course.skills.map((s, i) => (
-          <li key={i} className="flex items-start gap-2">
-            <div className="mt-1 w-2 h-2 bg-green-400 rounded-full" />
-            <span>{s}</span>
-          </li>
-        ))}
+        {course.skills.length > 0 ? (
+          course.skills.map((s: string, i: number) => (
+            <li key={i} className="flex items-start gap-2">
+              <div className="mt-1 w-2 h-2 bg-green-400 rounded-full" />
+              <span>{s}</span>
+            </li>
+          ))
+        ) : (
+          <li className="text-gray-400 italic">Skills belum diisi!</li>
+        )}
       </ul>
       <Link to={`/bootcamp/${course.slug}`} className="mt-auto">
         <button className="py-2 w-full rounded-lg border border-gray-500 hover:border-bluberi hover:bg-bluberi hover:text-putih transition-all font-semibold cursor-pointer">
@@ -185,19 +51,21 @@ const CourseCard = ({ course }: { course: Course }) => (
 );
 
 const BootcampLanding = () => {
+  const { courses, loading } = useBootcamp();
   const [page, setPage] = useState(0);
-  const [activeTab, setActiveTab] = useState<"bootcamp" | "freeclass">(
-    "bootcamp"
-  ); // <=== Tambahan: State kontrol tampilan
+  const [activeTab, setActiveTab] = useState<"bootcamp" | "freeclass">("bootcamp"); // <=== Tambahan: State kontrol tampilan
 
   const pageSize = 3;
   const totalPages = Math.ceil(courses.length / pageSize);
+  const currentCourses = courses.slice(page * pageSize, (page + 1) * pageSize);
 
   const handleNext = () => setPage((prev) => (prev + 1) % totalPages);
   const handlePrev = () =>
     setPage((prev) => (prev - 1 + totalPages) % totalPages);
 
-  const currentCourses = courses.slice(page * pageSize, (page + 1) * pageSize);
+  if (loading) {
+    return <div className="text-white text-center py-20">Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-onyx text-white px-6 py-16">
